@@ -13,7 +13,13 @@ import logging
 
 from secret import API_TOKEN
 
+# This is a global var and is bad practice
+with open('welcome_text.txt') as f:
+    WELCOME_TEXT = f.read()
+
 from telegram import Update, Bot, Contact
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+
 from telegram.ext import (
     Updater,
     CallbackContext,
@@ -27,21 +33,43 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# This is a global var and is bad practice
-with open('welcome_text.txt') as f:
-    welcome_text = f.read()
-
-
 def welcome_new_members(update: Update, context: CallbackContext) -> None:
     user_id = update.to_dict()['chat_join_request']['from']['id']
     bot = Bot(API_TOKEN)
-    message = bot.send_message(user_id, welcome_text)
-    contact = Contact(phone_number='123456', first_name='Contact', user_id=user_id)
+    message = bot.send_message(user_id, WELCOME_TEXT)
+    contact = Contact(phone_number='123456',
+                      first_name='Contact', user_id=user_id)
     # import pdb; pdb.set_trace()
     # bot.send_contact(chat_id=message.chat.id, contact=contact)
     # with open('Moomin.tgs', 'rb') as f:
     #     bot.send_sticker(update.effective_chat.id, user_id, f)
     bot.approve_chat_join_request(update.effective_chat.id, user_id)
+
+
+ef start(update: Update, context: CallbackContext) -> None:
+    """Sends a message with three inline buttons attached."""
+    keyboard = [
+        [
+            InlineKeyboardButton("Option 1", callback_data='1'),
+            InlineKeyboardButton("Option 2", callback_data='2'),
+        ],
+        [InlineKeyboardButton("Option 3", callback_data='3')],
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    update.message.reply_text('Please choose:', reply_markup=reply_markup)
+
+
+def button(update: Update, context: CallbackContext) -> None:
+    """Parses the CallbackQuery and updates the message text."""
+    query = update.callback_query
+
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    query.answer()
+
+    query.edit_message_text(text=f"Selected option: {query.data}")
 
 
 def main() -> None:
