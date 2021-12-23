@@ -10,65 +10,49 @@ bot.
 """
 
 import logging
+from typing import List
+
+from telegram import Update, Bot, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Updater, CallbackContext, ChatJoinRequestHandler
 
 from secret import API_TOKEN
 
-# This is a global var and is bad practice
-with open('welcome_text.txt') as f:
+with open("welcome_text.txt") as f:
     WELCOME_TEXT = f.read()
+WELCOME_BOT = Bot(API_TOKEN)
 
-from telegram import Update, Bot, Contact
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-
-from telegram.ext import (
-    Updater,
-    CallbackContext,
-    ChatJoinRequestHandler,
-)
 
 # Enable logging
-logging.basicConfig(
-    format="%(levelname)s - %(message)s", level=logging.INFO
-)
+logging.basicConfig(format="%(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def welcome_new_members(update: Update, context: CallbackContext) -> None:
-    user_id = update.to_dict()['chat_join_request']['from']['id']
-    bot = Bot(API_TOKEN)
-    message = bot.send_message(user_id, WELCOME_TEXT)
-    contact = Contact(phone_number='123456',
-                      first_name='Contact', user_id=user_id)
+def send_welcome_messages(user_id) -> List:
+
+    custom_keyboard_markup = InlineKeyboardMarkup(
+        [
+            [InlineKeyboardButton("Option 1", callback_data="1")],
+            [InlineKeyboardButton("Option 3", callback_data="3")],
+        ]
+    )
+
+    first_message = WELCOME_BOT.send_message(user_id, WELCOME_TEXT)
+    second_message = WELCOME_BOT.send_message(
+        text="Please choose:",
+        chat_id=first_message.chat.id,
+        reply_markup=custom_keyboard_markup,
+    )
+    return [first_message, second_message]
 
 
-    keyboard = [
-        [InlineKeyboardButton("Unofficial Guide to Getting Things Done", callback_data="1")],
-        [InlineKeyboardButton("Option 3", callback_data='3')],]
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
-    bot.send_message(text='Please choose:', chat_id=message.chat.id, reply_markup=reply_markup)
+def approve_new_member(effective_chat_id, user_id) -> bool:
+    return WELCOME_BOT.approve_chat_join_request(effective_chat_id, user_id)
 
 
-    # import pdb; pdb.set_trace()
-    # bot.send_contact(chat_id=message.chat.id, contact=contact)
-    # with open('Moomin.tgs', 'rb') as f:
-    #     bot.send_sticker(update.effective_chat.id, user_id, f)
-    bot.approve_chat_join_request(update.effective_chat.id, user_id)
-
-
-# def start(update: Update, context: CallbackContext) -> None:
-#     """Sends a message with three inline buttons attached."""
-#     keyboard = [
-#         [
-#             InlineKeyboardButton("Option 1", callback_data='1'),
-#             InlineKeyboardButton("Option 2", callback_data='2'),
-#         ],
-#         [InlineKeyboardButton("Option 3", callback_data='3')],]
-
-#     reply_markup = InlineKeyboardMarkup(keyboard)
-
-#     update.message.reply_text('Please choose:', reply_markup=reply_markup)
+def initiate_welcome_for_new_members(update: Update, context: CallbackContext) -> None:
+    user_id = update.to_dict()["chat_join_request"]["from"]["id"]
+    messages = send_welcome_messages(user_id)
+    approved = approve_new_member(update.effective_chat.id, user_id)
 
 
 # def button(update: Update, context: CallbackContext) -> None:
@@ -91,7 +75,7 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # Handle members requesting to join a chat
-    dispatcher.add_handler(ChatJoinRequestHandler(welcome_new_members))
+    dispatcher.add_handler(ChatJoinRequestHandler(initiate_welcome_for_new_members))
 
     # Start the Bot
     updater.start_polling(allowed_updates=[Update.CHAT_JOIN_REQUEST])
