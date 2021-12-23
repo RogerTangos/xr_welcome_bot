@@ -46,7 +46,7 @@ def welcome_new_members(update: Update, context: CallbackContext) -> None:
     bot.approve_chat_join_request(update.effective_chat.id, user_id)
 
 
-ef start(update: Update, context: CallbackContext) -> None:
+def start(update: Update, context: CallbackContext) -> None:
     """Sends a message with three inline buttons attached."""
     keyboard = [
         [
