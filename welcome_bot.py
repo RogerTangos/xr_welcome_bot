@@ -31,10 +31,13 @@ def respond_to_button_click(update: Update, context: CallbackContext):
     logger.info("Responding to button click")
 
     query = update.callback_query
-
     query.answer()
 
-    query.edit_message_text(text=f"Selected option: {query.data}")
+    document = Documents[query.data].value
+
+    WELCOME_BOT.send_document(chat_id=update.effective_chat.id, document=open(file=document["uri"], mode='rb'))
+
+    # query.edit_message_text(text=f"Selected option: {document['description']}")
 
 
 def send_welcome_messages(user_id) -> List:
