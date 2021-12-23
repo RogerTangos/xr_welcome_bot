@@ -6,8 +6,6 @@ verify_ssl = true
 [packages]
 requests = "*"
 python-telegram-bot = "*"
-telegram = "*"
-black = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.8"
