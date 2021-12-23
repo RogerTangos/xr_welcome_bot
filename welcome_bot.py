@@ -13,27 +13,43 @@ import logging
 from typing import List
 
 from telegram import Update, Bot, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CallbackContext, ChatJoinRequestHandler
+from telegram.ext import Updater, CallbackContext, ChatJoinRequestHandler, CallbackQueryHandler
 
+from documents import Documents
 from secret import API_TOKEN
 
 with open("welcome_text.txt") as f:
     WELCOME_TEXT = f.read()
 WELCOME_BOT = Bot(API_TOKEN)
 
-
 # Enable logging
 logging.basicConfig(format="%(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+def respond_to_button_click(update: Update, context: CallbackContext):
+    logger.info("Responding to button click")
+
+    query = update.callback_query
+
+    query.answer()
+
+    query.edit_message_text(text=f"Selected option: {query.data}")
+
+
 def send_welcome_messages(user_id) -> List:
+    logger.info(f"Sending welcome messages to user_id {user_id}")
+
+    buttons = []
+    for document in Documents:
+        buttons.append([InlineKeyboardButton(text=document.value["description"], callback_data=document.name)])
+    #
+    # buttons = [list(InlineKeyboardButton(text=document.value["description"], callback_data=document.name)) for document
+    #            in
+    #            Documents]
 
     custom_keyboard_markup = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("Option 1", callback_data="1")],
-            [InlineKeyboardButton("Option 3", callback_data="3")],
-        ]
+        buttons
     )
 
     first_message = WELCOME_BOT.send_message(user_id, WELCOME_TEXT)
@@ -46,6 +62,8 @@ def send_welcome_messages(user_id) -> List:
 
 
 def approve_new_member(effective_chat_id, user_id) -> bool:
+    logger.info(f"Approving join request from user_id {user_id}")
+
     return WELCOME_BOT.approve_chat_join_request(effective_chat_id, user_id)
 
 
@@ -76,9 +94,10 @@ def main() -> None:
 
     # Handle members requesting to join a chat
     dispatcher.add_handler(ChatJoinRequestHandler(initiate_welcome_for_new_members))
+    dispatcher.add_handler(CallbackQueryHandler(respond_to_button_click))
 
     # Start the Bot
-    updater.start_polling(allowed_updates=[Update.CHAT_JOIN_REQUEST])
+    updater.start_polling(allowed_updates=[Update.CHAT_JOIN_REQUEST, Update.CALLBACK_QUERY])
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
