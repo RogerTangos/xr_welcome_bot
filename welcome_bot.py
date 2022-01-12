@@ -123,7 +123,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
         doc_key = key[4:]
         try:
             doc = Documents[doc_key].value
-            with open(doc["uri"], mode="rb") as file:
+            with open(f"files/en/{doc['filename']}", mode="rb") as file:  # TODO i18n
                 update.effective_message.reply_text(
                     "Please hang on for a second, I'm sending you a file"
                 )
@@ -131,7 +131,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
                 context.bot.send_document(
                     chat_id=update.effective_chat.id,
                     document=file,
-                    filename=f"{doc['description']}.pdf",
+                    filename=f"{doc['description']}.pdf",  # FIXME remove question marks from filenames
                 )
         except Exception:
             update.effective_message.reply_text(
