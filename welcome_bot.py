@@ -48,10 +48,12 @@ def ask_for_language(update: Update, context: CallbackContext) -> int:
             InlineKeyboardButton(text="English", callback_data="en"),
         ],
     ]
-    markup = InlineKeyboardMarkup(keyboard, one_time_keyboard=True)
+    markup = InlineKeyboardMarkup(keyboard)
     welcome_message = (
-        "Hi! I'm the XR (Extinction Rebellion) welcome bot. I'm here to show you around. What's your preferred language?\n\n"
-        "Hoi! Ik ben de XR (Extinction Rebellion) welkomsrobot. Ik ben hier om je op weg te helpen. Welke taal spreek je?"
+        "Hi! I'm the XR (Extinction Rebellion) welcome bot. "
+        "I'm here to show you around. What's your preferred language?\n\n"
+        "Hoi! Ik ben de XR (Extinction Rebellion) welkomsrobot. "
+        "Ik ben hier om je op weg te helpen. Welke taal spreek je?"
     )
     context.bot.send_message(
         update.effective_user.id, welcome_message, reply_markup=markup
@@ -61,8 +63,6 @@ def ask_for_language(update: Update, context: CallbackContext) -> int:
 
 
 def language_selected(update: Update, context: CallbackContext) -> int:
-    """Ask the user for info about the selected predefined choice."""
-
     lang = update["callback_query"]["data"]
     update.effective_message.reply_text(
         f"Great! I will communicate in {lang} with you from now on."
@@ -78,7 +78,8 @@ def language_selected(update: Update, context: CallbackContext) -> int:
 
 def send_info_options(update: Update, context: CallbackContext):
     follow_up_message = (
-        "As a new member, you might have some questions. The Q&A Telegram Channel is really good for that. You can join it here: XXX add link\n\n"
+        "As a new member, you might have some questions. "
+        "The Q&A Telegram Channel is really good for that. You can join it here: XXX add link\n\n"
         "However, we've we've also prepared some information for you to start with."
     )
 
@@ -191,30 +192,24 @@ def send_done_message(update: Update, context: CallbackContext):
 
 def fallback_handler(update: Update, context: CallbackContext):
     if update.effective_chat.type != update.effective_chat.PRIVATE:
-        # ignore any messages except private messages
+        # Ignore any messages except private messages
         return
 
-    # TODO: store the message the user sent
     if update.callback_query is not None:
         # Ignore invalid button clicks
         update.callback_query.answer()
         return
 
+    # TODO: store the message the user sent
     update.effective_message.reply_text(
         f"I'm not sure how to respond to this. I'm just a simple robot :-("
     )
 
 
 def main() -> None:
-    """Run the bot."""
-    # Create the Updater and pass it the bot's token.
-    persistence = PicklePersistence(filename="user_data")
-    updater = Updater(API_TOKEN, persistence=persistence)
-
-    # Get the dispatcher to register handlers
+    updater = Updater(API_TOKEN, persistence=PicklePersistence(filename="user_data"))
     dispatcher = updater.dispatcher
 
-    # Add conversation handler
     handler = ConversationHandler(
         entry_points=[
             ChatJoinRequestHandler(user_joined),
@@ -235,7 +230,6 @@ def main() -> None:
 
     dispatcher.add_handler(handler)
 
-    # Start the bot
     updater.start_polling()
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
