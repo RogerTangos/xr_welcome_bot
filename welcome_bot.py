@@ -35,6 +35,7 @@ def user_joined(update: Update, context: CallbackContext) -> int:
         update.effective_chat.id, update.effective_user.id
     )
 
+    # FIXME the state does not seem to be updated after a join request
     return CHOOSING_LANGUAGE
 
 
@@ -69,6 +70,8 @@ def language_selected(update: Update, context: CallbackContext) -> int:
     context.user_data["language"] = lang
 
     send_info_options(update, context)
+
+    update.callback_query.answer()
 
     return CHOOSING_INFO
 
@@ -120,6 +123,10 @@ def info_requested(update: Update, context: CallbackContext) -> int:
         try:
             doc = Documents[doc_key].value
             with open(doc["uri"], mode="rb") as file:
+                update.effective_message.reply_text(
+                    "Please hang on for a second, I'm sending you a file"
+                )
+
                 context.bot.send_document(
                     chat_id=update.effective_chat.id,
                     document=file,
@@ -135,6 +142,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
             "## TODO ##\nI will send a real nice overview of all Telegram chats here"
         )
     elif key == "done":
+        update.callback_query.answer()
         send_done_message(update, context)
         return ConversationHandler.END
     else:
@@ -142,6 +150,8 @@ def info_requested(update: Update, context: CallbackContext) -> int:
         update.effective_message.reply_text(
             f"Oops, seems like something went wrong: I don't recognize your answer '{key}'"
         )
+
+    update.callback_query.answer()
 
     buttons = [
         [
@@ -159,12 +169,18 @@ def info_requested(update: Update, context: CallbackContext) -> int:
 
 def more_info_requested(update: Update, context: CallbackContext) -> int:
     answer = update["callback_query"]["data"]
+
+    update.callback_query.answer()
+
     if answer == "no":
         send_done_message(update, context)
         return ConversationHandler.END
-
-    send_info_options(update, context)
-    return CHOOSING_INFO
+    elif answer == "yes":
+        send_info_options(update, context)
+        return CHOOSING_INFO
+    else:
+        # ignore invalid button clicks
+        return CHOOSING_MORE_INFO
 
 
 def send_done_message(update: Update, context: CallbackContext):
@@ -174,7 +190,16 @@ def send_done_message(update: Update, context: CallbackContext):
 
 
 def fallback_handler(update: Update, context: CallbackContext):
+    if update.effective_chat.type != update.effective_chat.PRIVATE:
+        # ignore any messages except private messages
+        return
+
     # TODO: store the message the user sent
+    if update.callback_query is not None:
+        # Ignore invalid button clicks
+        update.callback_query.answer()
+        return
+
     update.effective_message.reply_text(
         f"I'm not sure how to respond to this. I'm just a simple robot :-("
     )
@@ -190,7 +215,7 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # Add conversation handler
-    conv_handler = ConversationHandler(
+    handler = ConversationHandler(
         entry_points=[
             ChatJoinRequestHandler(user_joined),
             CommandHandler("start", ask_for_language),
@@ -200,12 +225,15 @@ def main() -> None:
             CHOOSING_INFO: [CallbackQueryHandler(info_requested)],
             CHOOSING_MORE_INFO: [CallbackQueryHandler(more_info_requested)],
         },
-        fallbacks=[MessageHandler(filters=Filters.all, callback=fallback_handler)],
+        fallbacks=[
+            CallbackQueryHandler(fallback_handler),  # this does not seem to work
+            MessageHandler(filters=Filters.all, callback=fallback_handler),
+        ],
         name="xr_welcome_conversation",
         persistent=True,
     )
 
-    dispatcher.add_handler(conv_handler)
+    dispatcher.add_handler(handler)
 
     # Start the bot
     updater.start_polling()
