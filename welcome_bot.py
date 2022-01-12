@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import logging
-from typing import Dict
 
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
@@ -10,7 +9,10 @@ from telegram.ext import (
     MessageHandler,
     ConversationHandler,
     PicklePersistence,
-    CallbackContext, ChatJoinRequestHandler, CallbackQueryHandler, Filters,
+    CallbackContext,
+    ChatJoinRequestHandler,
+    CallbackQueryHandler,
+    Filters,
 )
 
 from documents import Documents
@@ -18,31 +20,41 @@ from secret import API_TOKEN
 
 # Enable logging
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
 )
 
 logger = logging.getLogger(__name__)
 
-CHOOSING_LANGUAGE, CHOOSING_INFO = range(2)
+CHOOSING_LANGUAGE, CHOOSING_INFO, CHOOSING_MORE_INFO = range(3)
 
 
 def user_joined(update: Update, context: CallbackContext) -> int:
     ask_for_language(update, context)
 
-    context.bot.approve_chat_join_request(update.effective_chat.id, update.effective_user.id)
+    context.bot.approve_chat_join_request(
+        update.effective_chat.id, update.effective_user.id
+    )
 
     return CHOOSING_LANGUAGE
 
 
 def ask_for_language(update: Update, context: CallbackContext) -> int:
+    # TODO: if the update is a join request, and we already have a user context, don't send any message
+    #   but return ConversationHandler.END instead
     keyboard = [
-        [InlineKeyboardButton(text='Nederlands', callback_data='nl'),
-         InlineKeyboardButton(text='English', callback_data='en')],
+        [
+            InlineKeyboardButton(text="Nederlands", callback_data="nl"),
+            InlineKeyboardButton(text="English", callback_data="en"),
+        ],
     ]
     markup = InlineKeyboardMarkup(keyboard, one_time_keyboard=True)
-    welcome_message = "Hi! I'm the XR (Extinction Rebellion) welcome bot. I'm here to show you around. What's your preferred language?\n\n" \
-                      "Hoi! Ik ben de XR (Extinction Rebellion) welkomsrobot. Ik ben hier om je op weg te helpen. Welke taal spreek je?"
-    context.bot.send_message(update.effective_user.id, welcome_message, reply_markup=markup)
+    welcome_message = (
+        "Hi! I'm the XR (Extinction Rebellion) welcome bot. I'm here to show you around. What's your preferred language?\n\n"
+        "Hoi! Ik ben de XR (Extinction Rebellion) welkomsrobot. Ik ben hier om je op weg te helpen. Welke taal spreek je?"
+    )
+    context.bot.send_message(
+        update.effective_user.id, welcome_message, reply_markup=markup
+    )
 
     return CHOOSING_LANGUAGE
 
@@ -51,23 +63,53 @@ def language_selected(update: Update, context: CallbackContext) -> int:
     """Ask the user for info about the selected predefined choice."""
 
     lang = update["callback_query"]["data"]
-    update.effective_message.reply_text(f"Great! I will communicate in {lang} with you from now on.")
+    update.effective_message.reply_text(
+        f"Great! I will communicate in {lang} with you from now on."
+    )
     context.user_data["language"] = lang
 
-    follow_up_message = "As a new member, you might have some questions. The Q&A Telegram Channel is really good for that. You can join it here: XXX add link\n\n" \
-                        "However, we've we've also prepared some information for you to start with."
+    send_info_options(update, context)
+
+    return CHOOSING_INFO
+
+
+def send_info_options(update: Update, context: CallbackContext):
+    follow_up_message = (
+        "As a new member, you might have some questions. The Q&A Telegram Channel is really good for that. You can join it here: XXX add link\n\n"
+        "However, we've we've also prepared some information for you to start with."
+    )
 
     buttons = []
     for document in Documents:
-        buttons.append([InlineKeyboardButton(text=document.value["description"], callback_data=f"doc_{document.name}")])
+        buttons.append(
+            [
+                InlineKeyboardButton(
+                    text=document.value["description"],
+                    callback_data=f"doc_{document.name}",
+                )
+            ]
+        )
 
-    buttons.append([InlineKeyboardButton(text="What are the local communication channels? (telegram chats)",
-                                         callback_data="chats")])
-    buttons.append([InlineKeyboardButton(text="Thanks, I'm all set. (end this conversation)", callback_data="done")])
+    buttons.append(
+        [
+            InlineKeyboardButton(
+                text="What are the local communication channels? (telegram chats)",
+                callback_data="chats",
+            )
+        ]
+    )
+    buttons.append(
+        [
+            InlineKeyboardButton(
+                text="Thanks, I'm all set. (end this conversation)",
+                callback_data="done",
+            )
+        ]
+    )
 
-    update.effective_message.reply_text(follow_up_message, reply_markup=InlineKeyboardMarkup(buttons))
-
-    return CHOOSING_INFO
+    update.effective_message.reply_text(
+        follow_up_message, reply_markup=InlineKeyboardMarkup(buttons)
+    )
 
 
 def info_requested(update: Update, context: CallbackContext) -> int:
@@ -77,37 +119,71 @@ def info_requested(update: Update, context: CallbackContext) -> int:
         doc_key = key[4:]
         try:
             doc = Documents[doc_key].value
-            with open(doc["uri"], mode='rb') as file:
-                context.bot.send_document(chat_id=update.effective_chat.id, document=file,
-                                          filename=f"{doc['description']}.pdf")
+            with open(doc["uri"], mode="rb") as file:
+                context.bot.send_document(
+                    chat_id=update.effective_chat.id,
+                    document=file,
+                    filename=f"{doc['description']}.pdf",
+                )
         except Exception:
             update.effective_message.reply_text(
-                f"Oops, seems like something went wrong. I cannot find or open the document you requested: '{doc_key}'")
+                f"Oops, seems like something went wrong. I cannot find or open the document you requested: '{doc_key}'"
+            )
     elif key == "chats":
-        pass
-    elif key == "done":
+        # TODO
         update.effective_message.reply_text(
-            "Ok then! Feel free to hit me up if you need more info. Just type /start to restart this conversation.")
+            "## TODO ##\nI will send a real nice overview of all Telegram chats here"
+        )
+    elif key == "done":
+        send_done_message(update, context)
         return ConversationHandler.END
     else:
         # should never happen
         update.effective_message.reply_text(
-            f"Oops, seems like something went wrong: I don't recognize your answer '{key}'")
+            f"Oops, seems like something went wrong: I don't recognize your answer '{key}'"
+        )
 
-    update.effective_message.reply_text("Do you want any more information?")
+    buttons = [
+        [
+            InlineKeyboardButton(text="Yes", callback_data="yes"),
+            InlineKeyboardButton(text="No", callback_data="no"),
+        ]
+    ]
 
+    update.effective_message.reply_text(
+        "Do you want any more information?", reply_markup=InlineKeyboardMarkup(buttons)
+    )
+
+    return CHOOSING_MORE_INFO
+
+
+def more_info_requested(update: Update, context: CallbackContext) -> int:
+    answer = update["callback_query"]["data"]
+    if answer == "no":
+        send_done_message(update, context)
+        return ConversationHandler.END
+
+    send_info_options(update, context)
     return CHOOSING_INFO
+
+
+def send_done_message(update: Update, context: CallbackContext):
+    update.effective_message.reply_text(
+        "Ok then! Feel free to hit me up if you need more info. Just type /start to restart this conversation."
+    )
 
 
 def fallback_handler(update: Update, context: CallbackContext):
     # TODO: store the message the user sent
-    update.effective_message.reply_text(f"I'm not sure how to respond to this. I'm just a simple robot :-(")
+    update.effective_message.reply_text(
+        f"I'm not sure how to respond to this. I'm just a simple robot :-("
+    )
 
 
 def main() -> None:
     """Run the bot."""
     # Create the Updater and pass it the bot's token.
-    persistence = PicklePersistence(filename='user_data')
+    persistence = PicklePersistence(filename="user_data")
     updater = Updater(API_TOKEN, persistence=persistence)
 
     # Get the dispatcher to register handlers
@@ -115,15 +191,14 @@ def main() -> None:
 
     # Add conversation handler
     conv_handler = ConversationHandler(
-        entry_points=[ChatJoinRequestHandler(user_joined),
-                      CommandHandler("start", ask_for_language)],
+        entry_points=[
+            ChatJoinRequestHandler(user_joined),
+            CommandHandler("start", ask_for_language),
+        ],
         states={
-            CHOOSING_LANGUAGE: [
-                CallbackQueryHandler(language_selected)
-            ],
-            CHOOSING_INFO: [
-                CallbackQueryHandler(info_requested)
-            ],
+            CHOOSING_LANGUAGE: [CallbackQueryHandler(language_selected)],
+            CHOOSING_INFO: [CallbackQueryHandler(info_requested)],
+            CHOOSING_MORE_INFO: [CallbackQueryHandler(more_info_requested)],
         },
         fallbacks=[MessageHandler(filters=Filters.all, callback=fallback_handler)],
         name="xr_welcome_conversation",
@@ -141,5 +216,5 @@ def main() -> None:
     updater.idle()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
