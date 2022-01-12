@@ -1,106 +1,139 @@
-# This program is dedicated to the public domain under the CC0 license.
-
-"""
-Simple Bot to handle chat join requests.
-Greets new users with a private message & automatically accepts them into the chat.
-
-Usage:
-Press Ctrl-C on the command line or send a signal to the process to stop the
-bot.
-"""
+#!/usr/bin/env python
 
 import logging
-from typing import List
+from typing import Dict
 
-from telegram import Update, Bot, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Updater, CallbackContext, ChatJoinRequestHandler, CallbackQueryHandler
+from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram.ext import (
+    Updater,
+    CommandHandler,
+    MessageHandler,
+    ConversationHandler,
+    PicklePersistence,
+    CallbackContext, ChatJoinRequestHandler, CallbackQueryHandler, Filters,
+)
 
 from documents import Documents
 from secret import API_TOKEN
 
-with open("welcome_text.txt") as f:
-    WELCOME_TEXT = f.read()
-WELCOME_BOT = Bot(API_TOKEN)
-
 # Enable logging
-logging.basicConfig(format="%(levelname)s - %(message)s", level=logging.INFO)
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG
+)
+
 logger = logging.getLogger(__name__)
 
-
-def respond_to_button_click(update: Update, context: CallbackContext):
-    logger.info("Responding to button click")
-
-    query = update.callback_query
-    query.answer()
-
-    document = Documents[query.data].value
-
-    WELCOME_BOT.send_document(chat_id=update.effective_chat.id, document=open(file=document["uri"], mode='rb'))
-
-    # query.edit_message_text(text=f"Selected option: {document['description']}")
+CHOOSING_LANGUAGE, CHOOSING_INFO = range(2)
 
 
-def send_welcome_messages(user_id) -> List:
-    logger.info(f"Sending welcome messages to user_id {user_id}")
+def user_joined(update: Update, context: CallbackContext) -> int:
+    ask_for_language(update, context)
+
+    context.bot.approve_chat_join_request(update.effective_chat.id, update.effective_user.id)
+
+    return CHOOSING_LANGUAGE
+
+
+def ask_for_language(update: Update, context: CallbackContext) -> int:
+    keyboard = [
+        [InlineKeyboardButton(text='Nederlands', callback_data='nl'),
+         InlineKeyboardButton(text='English', callback_data='en')],
+    ]
+    markup = InlineKeyboardMarkup(keyboard, one_time_keyboard=True)
+    welcome_message = "Hi! I'm the XR (Extinction Rebellion) welcome bot. I'm here to show you around. What's your preferred language?\n\n" \
+                      "Hoi! Ik ben de XR (Extinction Rebellion) welkomsrobot. Ik ben hier om je op weg te helpen. Welke taal spreek je?"
+    context.bot.send_message(update.effective_user.id, welcome_message, reply_markup=markup)
+
+    return CHOOSING_LANGUAGE
+
+
+def language_selected(update: Update, context: CallbackContext) -> int:
+    """Ask the user for info about the selected predefined choice."""
+
+    lang = update["callback_query"]["data"]
+    update.effective_message.reply_text(f"Great! I will communicate in {lang} with you from now on.")
+    context.user_data["language"] = lang
+
+    follow_up_message = "As a new member, you might have some questions. The Q&A Telegram Channel is really good for that. You can join it here: XXX add link\n\n" \
+                        "However, we've we've also prepared some information for you to start with."
 
     buttons = []
     for document in Documents:
-        buttons.append([InlineKeyboardButton(text=document.value["description"], callback_data=document.name)])
-    #
-    # buttons = [list(InlineKeyboardButton(text=document.value["description"], callback_data=document.name)) for document
-    #            in
-    #            Documents]
+        buttons.append([InlineKeyboardButton(text=document.value["description"], callback_data=f"doc_{document.name}")])
 
-    custom_keyboard_markup = InlineKeyboardMarkup(
-        buttons
-    )
+    buttons.append([InlineKeyboardButton(text="What are the local communication channels? (telegram chats)",
+                                         callback_data="chats")])
+    buttons.append([InlineKeyboardButton(text="Thanks, I'm all set. (end this conversation)", callback_data="done")])
 
-    first_message = WELCOME_BOT.send_message(user_id, WELCOME_TEXT)
-    second_message = WELCOME_BOT.send_message(
-        text="Please choose:",
-        chat_id=first_message.chat.id,
-        reply_markup=custom_keyboard_markup,
-    )
-    return [first_message, second_message]
+    update.effective_message.reply_text(follow_up_message, reply_markup=InlineKeyboardMarkup(buttons))
+
+    return CHOOSING_INFO
 
 
-def approve_new_member(effective_chat_id, user_id) -> bool:
-    logger.info(f"Approving join request from user_id {user_id}")
+def info_requested(update: Update, context: CallbackContext) -> int:
+    key = update["callback_query"]["data"]
 
-    return WELCOME_BOT.approve_chat_join_request(effective_chat_id, user_id)
+    if key[0:4] == "doc_":
+        doc_key = key[4:]
+        try:
+            doc = Documents[doc_key].value
+            with open(doc["uri"], mode='rb') as file:
+                context.bot.send_document(chat_id=update.effective_chat.id, document=file,
+                                          filename=f"{doc['description']}.pdf")
+        except Exception:
+            update.effective_message.reply_text(
+                f"Oops, seems like something went wrong. I cannot find or open the document you requested: '{doc_key}'")
+    elif key == "chats":
+        pass
+    elif key == "done":
+        update.effective_message.reply_text(
+            "Ok then! Feel free to hit me up if you need more info. Just type /start to restart this conversation.")
+        return ConversationHandler.END
+    else:
+        # should never happen
+        update.effective_message.reply_text(
+            f"Oops, seems like something went wrong: I don't recognize your answer '{key}'")
+
+    update.effective_message.reply_text("Do you want any more information?")
+
+    return CHOOSING_INFO
 
 
-def initiate_welcome_for_new_members(update: Update, context: CallbackContext) -> None:
-    user_id = update.to_dict()["chat_join_request"]["from"]["id"]
-    messages = send_welcome_messages(user_id)
-    approved = approve_new_member(update.effective_chat.id, user_id)
-
-
-# def button(update: Update, context: CallbackContext) -> None:
-#     """Parses the CallbackQuery and updates the message text."""
-#     query = update.callback_query
-
-#     # CallbackQueries need to be answered, even if no notification to the user is needed
-#     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
-#     query.answer()
-
-#     query.edit_message_text(text=f"Selected option: {query.data}")
+def fallback_handler(update: Update, context: CallbackContext):
+    # TODO: store the message the user sent
+    update.effective_message.reply_text(f"I'm not sure how to respond to this. I'm just a simple robot :-(")
 
 
 def main() -> None:
-    """Start the bot."""
-    # Create the Updater and pass it your bot's token.
-    updater = Updater(API_TOKEN)
+    """Run the bot."""
+    # Create the Updater and pass it the bot's token.
+    persistence = PicklePersistence(filename='user_data')
+    updater = Updater(API_TOKEN, persistence=persistence)
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
 
-    # Handle members requesting to join a chat
-    dispatcher.add_handler(ChatJoinRequestHandler(initiate_welcome_for_new_members))
-    dispatcher.add_handler(CallbackQueryHandler(respond_to_button_click))
+    # Add conversation handler
+    conv_handler = ConversationHandler(
+        entry_points=[ChatJoinRequestHandler(user_joined),
+                      CommandHandler("start", ask_for_language)],
+        states={
+            CHOOSING_LANGUAGE: [
+                CallbackQueryHandler(language_selected)
+            ],
+            CHOOSING_INFO: [
+                CallbackQueryHandler(info_requested)
+            ],
+        },
+        fallbacks=[MessageHandler(filters=Filters.all, callback=fallback_handler)],
+        name="xr_welcome_conversation",
+        persistent=True,
+    )
 
-    # Start the Bot
-    updater.start_polling(allowed_updates=[Update.CHAT_JOIN_REQUEST, Update.CALLBACK_QUERY])
+    dispatcher.add_handler(conv_handler)
+
+    # Start the bot
+    updater.start_polling()
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
@@ -108,5 +141,5 @@ def main() -> None:
     updater.idle()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

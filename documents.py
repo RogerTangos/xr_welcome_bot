@@ -2,19 +2,19 @@ import enum
 
 
 class Documents(enum.Enum):
-    WORKING_WITH_XR = {
-        "description": "An Informal Guide to Working with XR",
-        "uri": "files/dummy.pdf"
+    HEADING_FOR_EXTINCTION_1 = {
+        "description": "Why does XR exist? (the crisis)",
+        "uri": "files/heading_for_extinction_1.pdf"
     }
-    XR_STRUCTURES_GUIDE = {
-        "description": "A Guide to Official XR Structures",
-        "uri": "files/dummy.pdf"
+    HEADING_FOR_EXTINCTION_2 = {
+        "description": "What does XR do? (the solution)",
+        "uri": "files/heading_for_extinction_2.pdf"
     }
-    THEORY_OF_CHANGE = {
-        "description": "XR's Theory of Change",
-        "uri": "files/dummy.pdf"
+    XR_STRUCTURES = {
+        "description": "How is XR organized? (the logistics)",
+        "uri": "files/xr_structures.pdf"
     }
-    HEADING_FOR_EXTIONTION = {
-        "description": "Heading for Extinction(The Climate Crisis)",
-        "uri": "files/dummy.pdf"
+    XR_UNOFFICIAL_GUIDE = {
+        "description": "But really, how does this work? (the reality)",
+        "uri": "files/xr_unofficial_guide.pdf"
     }
