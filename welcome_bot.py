@@ -64,14 +64,18 @@ def ask_for_language(update: Update, context: CallbackContext) -> int:
 
 def language_selected(update: Update, context: CallbackContext) -> int:
     lang = update["callback_query"]["data"]
+    update.callback_query.answer()
+
+    if lang != "en" and lang != "nl":
+        # ignore invalid button clicks
+        return CHOOSING_LANGUAGE
+
     update.effective_message.reply_text(
         f"Great! I will communicate in {lang} with you from now on."
     )
     context.user_data["language"] = lang
 
     send_info_options(update, context)
-
-    update.callback_query.answer()
 
     return CHOOSING_INFO
 
@@ -147,10 +151,9 @@ def info_requested(update: Update, context: CallbackContext) -> int:
         send_done_message(update, context)
         return ConversationHandler.END
     else:
-        # should never happen
-        update.effective_message.reply_text(
-            f"Oops, seems like something went wrong: I don't recognize your answer '{key}'"
-        )
+        # Ignore invalid button clicks
+        update.callback_query.answer()
+        return CHOOSING_INFO
 
     update.callback_query.answer()
 
@@ -162,7 +165,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
     ]
 
     update.effective_message.reply_text(
-        "Do you want any more information?", reply_markup=InlineKeyboardMarkup(buttons)
+        "Do you wish to receive any more information?", reply_markup=InlineKeyboardMarkup(buttons)
     )
 
     return CHOOSING_MORE_INFO
