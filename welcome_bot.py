@@ -113,7 +113,7 @@ def language_selected(update: Update, context: CallbackContext) -> int:
     update_language(lang)
 
     update.effective_message.reply_text(
-        _("Great! I will communicate in {lang} with you from now on.")
+        _("Great! I will communicate in English with you from now on.")
     )
 
     send_info_options(update, context)
@@ -126,7 +126,7 @@ def send_info_options(update: Update, context: CallbackContext):
     follow_up_message = _(
         "As a new member, you might have some questions. "
         "The Q&A Telegram Channel is really good for that. You can join it here: {link}\n\n"
-        "However, we've we've also prepared some information for you to start with."
+        "However, we've also prepared some information for you to start with."
     ).format(link="{{TODO ADD LINK}}")
 
     buttons = []
@@ -174,7 +174,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
                     f"files/{get_user_language(context)}/{doc['filename']}", mode="rb"
             ) as file:  # TODO i18n
                 update.effective_message.reply_text(
-                    _("Please hang on for a second, I'm sending you a file")
+                    _("Please hang on for a second, I'm sending you a file.")
                 )
 
                 context.bot.send_document(
@@ -185,13 +185,13 @@ def info_requested(update: Update, context: CallbackContext) -> int:
         except Exception:
             update.effective_message.reply_text(
                 _(
-                    "Oops, seems like something went wrong. I cannot find or open the document you requested: '{doc_key}'"
+                    "Oops, seems like something went wrong. I cannot find or open the document you requested: '{doc_key}'."
                 ).format(doc_key=doc_key)
             )
     elif key == "chats":
         # TODO
         update.effective_message.reply_text(
-            _("## TODO ##\nI will send a real nice overview of all Telegram chats here")
+            _("## TODO ##\nI will send a real nice overview of all Telegram chats here.")
         )
     elif key == "done":
         update.callback_query.answer()
@@ -254,7 +254,7 @@ def fallback_handler(update: Update, context: CallbackContext):
 
     # TODO: store the message the user sent
     update.effective_message.reply_text(
-        _("I'm not sure how to respond to this. I'm just a simple robot :-(")
+        _("I am not sure how to respond to this. I'm just a simple robot :-(")
     )
 
 

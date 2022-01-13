@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-13 23:34+0000\n"
+"POT-Creation-Date: 2022-01-13 23:52+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,8 +34,7 @@ msgid "But really, how does this work? (the reality)"
 msgstr ""
 
 #: welcome_bot.py:116
-#, python-brace-format
-msgid "Great! I will communicate in {lang} with you from now on."
+msgid "Great! I will communicate in English with you from now on."
 msgstr ""
 
 #: welcome_bot.py:127
@@ -44,7 +43,7 @@ msgid ""
 "As a new member, you might have some questions. The Q&A Telegram Channel is "
 "really good for that. You can join it here: {link}\n"
 "\n"
-"However, we've we've also prepared some information for you to start with."
+"However, we've also prepared some information for you to start with."
 msgstr ""
 
 #: welcome_bot.py:146
@@ -56,20 +55,20 @@ msgid "Thanks, I'm all set. (end this conversation)"
 msgstr ""
 
 #: welcome_bot.py:177
-msgid "Please hang on for a second, I'm sending you a file"
+msgid "Please hang on for a second, I'm sending you a file."
 msgstr ""
 
 #: welcome_bot.py:188
 #, python-brace-format
 msgid ""
 "Oops, seems like something went wrong. I cannot find or open the document "
-"you requested: '{doc_key}'"
+"you requested: '{doc_key}'."
 msgstr ""
 
 #: welcome_bot.py:194
 msgid ""
 "## TODO ##\n"
-"I will send a real nice overview of all Telegram chats here"
+"I will send a real nice overview of all Telegram chats here."
 msgstr ""
 
 #: welcome_bot.py:209
@@ -91,5 +90,5 @@ msgid ""
 msgstr ""
 
 #: welcome_bot.py:257
-msgid "I'm not sure how to respond to this. I'm just a simple robot :-("
+msgid "I am not sure how to respond to this. I'm just a simple robot :-("
 msgstr ""
