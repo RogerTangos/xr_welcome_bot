@@ -229,6 +229,7 @@ def main() -> None:
         ],
         name="xr_welcome_conversation",
         persistent=True,
+        per_chat=False,
     )
 
     dispatcher.add_handler(handler)
