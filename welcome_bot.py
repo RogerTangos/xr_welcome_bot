@@ -5,17 +5,17 @@ import logging
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
     Updater,
-    CommandHandler,
-    MessageHandler,
     ConversationHandler,
     PicklePersistence,
     CallbackContext,
     ChatJoinRequestHandler,
-    CallbackQueryHandler,
     Filters,
 )
 
 from documents import Documents
+from handlers.privateconversationcallbackqueryhandler import PrivateConversationCallbackQueryHandler
+from handlers.privateconversationcommandhandler import PrivateConversationCommandHandler
+from handlers.privateconversationmessagehandler import PrivateConversationMessageHandler
 from secret import API_TOKEN
 
 # Enable logging
@@ -165,7 +165,8 @@ def info_requested(update: Update, context: CallbackContext) -> int:
     ]
 
     update.effective_message.reply_text(
-        "Do you wish to receive any more information?", reply_markup=InlineKeyboardMarkup(buttons)
+        "Do you wish to receive any more information?",
+        reply_markup=InlineKeyboardMarkup(buttons),
     )
 
     return CHOOSING_MORE_INFO
@@ -194,10 +195,6 @@ def send_done_message(update: Update, context: CallbackContext):
 
 
 def fallback_handler(update: Update, context: CallbackContext):
-    if update.effective_chat.type != update.effective_chat.PRIVATE:
-        # Ignore any messages except private messages
-        return
-
     if update.callback_query is not None:
         # Ignore invalid button clicks
         update.callback_query.answer()
@@ -216,16 +213,16 @@ def main() -> None:
     handler = ConversationHandler(
         entry_points=[
             ChatJoinRequestHandler(user_joined),
-            CommandHandler("start", ask_for_language),
+            PrivateConversationCommandHandler("start", ask_for_language),
         ],
         states={
-            CHOOSING_LANGUAGE: [CallbackQueryHandler(language_selected)],
-            CHOOSING_INFO: [CallbackQueryHandler(info_requested)],
-            CHOOSING_MORE_INFO: [CallbackQueryHandler(more_info_requested)],
+            CHOOSING_LANGUAGE: [PrivateConversationCallbackQueryHandler(language_selected)],
+            CHOOSING_INFO: [PrivateConversationCallbackQueryHandler(info_requested)],
+            CHOOSING_MORE_INFO: [PrivateConversationCallbackQueryHandler(more_info_requested)],
         },
         fallbacks=[
-            CallbackQueryHandler(fallback_handler),  # this does not seem to work
-            MessageHandler(filters=Filters.all, callback=fallback_handler),
+            PrivateConversationCallbackQueryHandler(fallback_handler),  # this does not seem to work
+            PrivateConversationMessageHandler(filters=Filters.all, callback=fallback_handler),
         ],
         name="xr_welcome_conversation",
         persistent=True,
