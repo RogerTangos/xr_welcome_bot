@@ -1,0 +1,95 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-13 23:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: documents.py:11
+msgid "Why does XR exist? (the crisis)"
+msgstr ""
+
+#: documents.py:15
+msgid "What does XR do? (the solution)"
+msgstr ""
+
+#: documents.py:19
+msgid "How is XR organized? (the logistics)"
+msgstr ""
+
+#: documents.py:23
+msgid "But really, how does this work? (the reality)"
+msgstr ""
+
+#: welcome_bot.py:116
+#, python-brace-format
+msgid "Great! I will communicate in {lang} with you from now on."
+msgstr ""
+
+#: welcome_bot.py:127
+#, python-brace-format
+msgid ""
+"As a new member, you might have some questions. The Q&A Telegram Channel is "
+"really good for that. You can join it here: {link}\n"
+"\n"
+"However, we've we've also prepared some information for you to start with."
+msgstr ""
+
+#: welcome_bot.py:146
+msgid "What are the local communication channels? (telegram chats)"
+msgstr ""
+
+#: welcome_bot.py:154
+msgid "Thanks, I'm all set. (end this conversation)"
+msgstr ""
+
+#: welcome_bot.py:177
+msgid "Please hang on for a second, I'm sending you a file"
+msgstr ""
+
+#: welcome_bot.py:188
+#, python-brace-format
+msgid ""
+"Oops, seems like something went wrong. I cannot find or open the document "
+"you requested: '{doc_key}'"
+msgstr ""
+
+#: welcome_bot.py:194
+msgid ""
+"## TODO ##\n"
+"I will send a real nice overview of all Telegram chats here"
+msgstr ""
+
+#: welcome_bot.py:209
+msgid "Yes"
+msgstr ""
+
+#: welcome_bot.py:210
+msgid "No"
+msgstr ""
+
+#: welcome_bot.py:215
+msgid "Do you wish to receive any more information?"
+msgstr ""
+
+#: welcome_bot.py:243
+msgid ""
+"Ok then! Feel free to hit me up if you need more info. Just type /start to "
+"restart this conversation."
+msgstr ""
+
+#: welcome_bot.py:257
+msgid "I'm not sure how to respond to this. I'm just a simple robot :-("
+msgstr ""
