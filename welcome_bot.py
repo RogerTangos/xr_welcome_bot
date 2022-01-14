@@ -23,9 +23,7 @@ from handlers.privateconversationmessagehandler import PrivateConversationMessag
 from secret import API_TOKEN
 
 # Enable logging
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
-)
+logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +31,19 @@ CHOOSING_LANGUAGE, CHOOSING_INFO, CHOOSING_MORE_INFO = range(3)
 
 LANG_NL = gettext.translation("nl_NL", localedir="locale", languages=["nl_NL"])
 
-_ = gettext.gettext
+# This is a function that you're going to overwrite,
+# but should be explicitly be declared as a function.
+# It's possible to do this as a lambda or (the pep-8 preferred way)
+# just using def
+def translate(text, lang):
+    if lang == "nl":
+        return LANG_NL.gettext(text)
+    else:
+        return gettext.gettext(text)
+
+
+# granted, it's pretty weird to overwrite global functions
+# but maybe this how gettext is commonly used? I don't know.
 
 
 def get_user_language(context: CallbackContext) -> str:
@@ -45,29 +55,39 @@ def translated(func):
     def wrapped(update: Update, context: CallbackContext, *args, **kwargs):
         lang = get_user_language(context)
 
-        update_language(lang)
+        # this is 100% not thread safe and is going to result in the program
+        # responding in the wrong language if two different language users are
+        # talking to it at the same time.
+        # Instead of using update_language, why not set a language attribute
+        # in each of the functions? If they default to None, they can still be
+        # called with the handler, and then the language can be set in this
+        # wrapper. A "translate" function can take the language as a variable.
+        # I've gone ahead and implemented that.
+        # i.e. def more_info_requested(update: Update, context: CallbackContext, lang=None)
 
-        result = func(update, context, *args, **kwargs)
+        # update_language(lang)
+
+        result = func(update, context, lang, *args, **kwargs)
         return result
 
     return wrapped
 
 
-def update_language(lang):
-    global _
+# def update_language(lang):
 
-    if lang == "nl":
-        _ = LANG_NL.gettext
-    else:
-        _ = gettext.gettext
+#     # this makes me cringe a bit, but aside from making the whole thing OO, I'm not sure how to do it better
+#     global translate
+
+#     if lang == "nl":
+#         translate = LANG_NL.gettext
+#     else:
+#         translate = gettext.gettext
 
 
 def user_joined(update: Update, context: CallbackContext) -> int:
     ask_for_language(update, context)
 
-    context.bot.approve_chat_join_request(
-        update.effective_chat.id, update.effective_user.id
-    )
+    context.bot.approve_chat_join_request(update.effective_chat.id, update.effective_user.id)
 
     # FIXME the state does not seem to be updated after a join request
     return CHOOSING_LANGUAGE
@@ -89,9 +109,7 @@ def ask_for_language(update: Update, context: CallbackContext) -> int:
         "Hoi! Ik ben de XR (Extinction Rebellion) welkomsrobot. "
         "Ik ben hier om je op weg te helpen. Welke taal spreek je?"
     )
-    context.bot.send_message(
-        update.effective_user.id, welcome_message, reply_markup=markup
-    )
+    context.bot.send_message(update.effective_user.id, welcome_message, reply_markup=markup)
 
     return CHOOSING_LANGUAGE
 
@@ -106,11 +124,9 @@ def language_selected(update: Update, context: CallbackContext) -> int:
 
     context.user_data["language"] = lang
 
-    update_language(lang)
+    # update_language(lang)
 
-    update.effective_message.reply_text(
-        _("Great! I will communicate in English with you from now on.")
-    )
+    update.effective_message.reply_text(translate("Great! I will communicate in English with you from now on.", lang))
 
     send_info_options(update, context)
 
@@ -118,11 +134,12 @@ def language_selected(update: Update, context: CallbackContext) -> int:
 
 
 @translated
-def send_info_options(update: Update, context: CallbackContext):
-    follow_up_message = _(
+def send_info_options(update: Update, context: CallbackContext, lang=None):
+    follow_up_message = translate(
         "As a new member, you might have some questions. "
         "The Q&A Telegram Channel is really good for that. You can join it here: {link}\n\n"
-        "However, we've also prepared some information for you to start with."
+        "However, we've also prepared some information for you to start with.",
+        lang,
     ).format(link="{{TODO ADD LINK}}")
 
     buttons = []
@@ -130,7 +147,7 @@ def send_info_options(update: Update, context: CallbackContext):
         buttons.append(
             [
                 InlineKeyboardButton(
-                    text=_(document.value["description"]),
+                    text=translate(document.value["description"], lang),
                     callback_data=f"doc_{document.name}",
                 )
             ]
@@ -139,7 +156,7 @@ def send_info_options(update: Update, context: CallbackContext):
     buttons.append(
         [
             InlineKeyboardButton(
-                text=_("What are the local communication channels? (telegram chats)"),
+                text=translate("What are the local communication channels? (telegram chats)", lang),
                 callback_data="chats",
             )
         ]
@@ -147,49 +164,44 @@ def send_info_options(update: Update, context: CallbackContext):
     buttons.append(
         [
             InlineKeyboardButton(
-                text=_("Thanks, I'm all set. (end this conversation)"),
+                text=translate("Thanks, I'm all set. (end this conversation)", lang),
                 callback_data="done",
             )
         ]
     )
 
-    update.effective_message.reply_text(
-        follow_up_message, reply_markup=InlineKeyboardMarkup(buttons)
-    )
+    update.effective_message.reply_text(follow_up_message, reply_markup=InlineKeyboardMarkup(buttons))
 
 
 @translated
-def info_requested(update: Update, context: CallbackContext) -> int:
+def info_requested(update: Update, context: CallbackContext, lang=None) -> int:
     key = update["callback_query"]["data"]
 
     if key[0:4] == "doc_":
         doc_key = key[4:]
         try:
             doc = Documents[doc_key].value
-            with open(
-                f"files/{get_user_language(context)}/{doc['filename']}", mode="rb"
-            ) as file:  # TODO i18n
+            with open(f"files/{get_user_language(context)}/{doc['filename']}", mode="rb") as file:  # TODO i18n
                 update.effective_message.reply_text(
-                    _("Please hang on for a second, I'm sending you a file.")
+                    translate("Please hang on for a second, I'm sending you a file.", lang)
                 )
 
                 context.bot.send_document(
                     chat_id=update.effective_chat.id,
                     document=file,
-                    filename=f"{_(doc['description'])}.pdf",  # FIXME remove question marks from filenames
+                    filename=f"{translate(doc['description'], lang)}.pdf",  # FIXME remove question marks from filenames
                 )
         except Exception:
             update.effective_message.reply_text(
-                _(
-                    "Oops, seems like something went wrong. I cannot find or open the document you requested: '{doc_key}'."
+                translate(
+                    "Oops, seems like something went wrong. I cannot find or open the document you requested: '{doc_key}'.",
+                    lang,
                 ).format(doc_key=doc_key)
             )
     elif key == "chats":
         # TODO
         update.effective_message.reply_text(
-            _(
-                "## TODO ##\nI will send a real nice overview of all Telegram chats here."
-            )
+            translate("## TODO ##\nI will send a real nice overview of all Telegram chats here.", lang)
         )
     elif key == "done":
         update.callback_query.answer()
@@ -204,13 +216,13 @@ def info_requested(update: Update, context: CallbackContext) -> int:
 
     buttons = [
         [
-            InlineKeyboardButton(text=_("Yes"), callback_data="yes"),
-            InlineKeyboardButton(text=_("No"), callback_data="no"),
+            InlineKeyboardButton(text=translate("Yes", lang), callback_data="yes"),
+            InlineKeyboardButton(text=translate("No", lang), callback_data="no"),
         ]
     ]
 
     update.effective_message.reply_text(
-        _("Do you wish to receive any more information?"),
+        translate("Do you wish to receive any more information?", lang),
         reply_markup=InlineKeyboardMarkup(buttons),
     )
 
@@ -218,7 +230,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
 
 
 @translated
-def more_info_requested(update: Update, context: CallbackContext) -> int:
+def more_info_requested(update: Update, context: CallbackContext, lang=None) -> int:
     answer = update["callback_query"]["data"]
 
     update.callback_query.answer()
@@ -235,16 +247,17 @@ def more_info_requested(update: Update, context: CallbackContext) -> int:
 
 
 @translated
-def send_done_message(update: Update, context: CallbackContext):
+def send_done_message(update: Update, context: CallbackContext, lang=None):
     update.effective_message.reply_text(
-        _(
-            "Ok then! Feel free to hit me up if you need more info. Just type /start to restart this conversation."
+        translate(
+            "Ok then! Feel free to hit me up if you need more info. Just type /start to restart this conversation.",
+            lang=lang,
         )
     )
 
 
 @translated
-def fallback_handler(update: Update, context: CallbackContext):
+def fallback_handler(update: Update, context: CallbackContext, lang=None):
     if update.callback_query is not None:
         # Ignore invalid button clicks
         update.callback_query.answer()
@@ -252,7 +265,7 @@ def fallback_handler(update: Update, context: CallbackContext):
 
     # TODO: store the message the user sent
     update.effective_message.reply_text(
-        _("I am not sure how to respond to this. I'm just a simple robot :-(")
+        translate("I am not sure how to respond to this. I'm just a simple robot :-(", lang)
     )
 
 
@@ -266,21 +279,13 @@ def main() -> None:
             PrivateConversationCommandHandler("start", ask_for_language),
         ],
         states={
-            CHOOSING_LANGUAGE: [
-                PrivateConversationCallbackQueryHandler(language_selected)
-            ],
+            CHOOSING_LANGUAGE: [PrivateConversationCallbackQueryHandler(language_selected)],
             CHOOSING_INFO: [PrivateConversationCallbackQueryHandler(info_requested)],
-            CHOOSING_MORE_INFO: [
-                PrivateConversationCallbackQueryHandler(more_info_requested)
-            ],
+            CHOOSING_MORE_INFO: [PrivateConversationCallbackQueryHandler(more_info_requested)],
         },
         fallbacks=[
-            PrivateConversationCallbackQueryHandler(
-                fallback_handler
-            ),  # this does not seem to work
-            PrivateConversationMessageHandler(
-                filters=Filters.all, callback=fallback_handler
-            ),
+            PrivateConversationCallbackQueryHandler(fallback_handler),  # this does not seem to work
+            PrivateConversationMessageHandler(filters=Filters.all, callback=fallback_handler),
         ],
         name="xr_welcome_conversation",
         persistent=True,
