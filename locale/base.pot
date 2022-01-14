@@ -40,8 +40,8 @@ msgstr ""
 #: welcome_bot.py:127
 #, python-brace-format
 msgid ""
-"As a new member, you might have some questions. The Q&A Telegram Channel is "
-"really good for that. You can join it here: {link}\n"
+"As a new rebel, you might have some questions. The Q&A Telegram Channel is "
+"really good for that. You should join it 👉 {link} 💬\n"
 "\n"
 "However, we've also prepared some information for you to start with."
 msgstr ""
@@ -55,7 +55,7 @@ msgid "Thanks, I'm all set. (end this conversation)"
 msgstr ""
 
 #: welcome_bot.py:177
-msgid "Please hang on for a second, I'm sending you a file."
+msgid "Just a second, I'm sending you a file."
 msgstr ""
 
 #: welcome_bot.py:188
@@ -80,7 +80,7 @@ msgid "No"
 msgstr ""
 
 #: welcome_bot.py:215
-msgid "Do you wish to receive any more information?"
+msgid "Would you like any more information?"
 msgstr ""
 
 #: welcome_bot.py:243

@@ -97,11 +97,11 @@ def language_selected(update: Update, context: CallbackContext) -> int:
 
 def send_info_options(update: Update, context: CallbackContext):
     follow_up_message = translate(
-        "As a new member, you might have some questions. "
-        "The Q&A Telegram Channel is really good for that. You can join it here: {link}\n\n"
+        "As a new rebel, you might have some questions. "
+        "The Q&A Telegram Channel is really good for that. You should join it 👉 {link} 💬\n\n"
         "However, we've also prepared some information for you to start with.",
         context,
-    ).format(link="{{TODO ADD LINK}}")
+    ).format(link="https://t.me/+ttV6Jfcrpoc5YTE5")
 
     buttons = []
     for document in Documents:
@@ -149,7 +149,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
                 f"files/{get_user_language(context)}/{doc['filename']}", mode="rb"
             ) as file:  # TODO i18n
                 update.effective_message.reply_text(
-                    translate("Please hang on for a second, I'm sending you a file.", context)
+                    translate("Just a second, I'm sending you a file.", context)
                 )
 
                 context.bot.send_document(
@@ -190,7 +190,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
     ]
 
     update.effective_message.reply_text(
-        translate("Do you wish to receive any more information?", context),
+        translate("Would you like any more information?", context),
         reply_markup=InlineKeyboardMarkup(buttons),
     )
 
