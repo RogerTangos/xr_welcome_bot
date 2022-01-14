@@ -59,9 +59,7 @@ def update_language(lang):
     if lang == "nl":
         _ = LANG_NL.gettext
     else:
-
-        def _(message):
-            return message
+        _ = gettext.gettext
 
 
 def user_joined(update: Update, context: CallbackContext) -> int:
