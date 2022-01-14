@@ -32,16 +32,12 @@ logger = logging.getLogger(__name__)
 CHOOSING_LANGUAGE, CHOOSING_INFO, CHOOSING_MORE_INFO = range(3)
 
 LANG_NL = gettext.translation("nl_NL", localedir="locale", languages=["nl_NL"])
-LANG_EN = gettext.translation("en_US", localedir="locale", languages=["en_US"])
-_ = LANG_EN
+
+_ = gettext.gettext
 
 
 def get_user_language(context: CallbackContext) -> str:
-    return (
-        context.user_data["language"]
-        if "language" in context.user_data["language"]
-        else "en"
-    )
+    return context.user_data["language"] if "language" in context.user_data else "en"
 
 
 def translated(func):
@@ -63,7 +59,9 @@ def update_language(lang):
     if lang == "nl":
         _ = LANG_NL.gettext
     else:
-        _ = LANG_EN.gettext
+
+        def _(message):
+            return message
 
 
 def user_joined(update: Update, context: CallbackContext) -> int:
@@ -171,7 +169,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
         try:
             doc = Documents[doc_key].value
             with open(
-                    f"files/{get_user_language(context)}/{doc['filename']}", mode="rb"
+                f"files/{get_user_language(context)}/{doc['filename']}", mode="rb"
             ) as file:  # TODO i18n
                 update.effective_message.reply_text(
                     _("Please hang on for a second, I'm sending you a file.")
@@ -191,7 +189,9 @@ def info_requested(update: Update, context: CallbackContext) -> int:
     elif key == "chats":
         # TODO
         update.effective_message.reply_text(
-            _("## TODO ##\nI will send a real nice overview of all Telegram chats here.")
+            _(
+                "## TODO ##\nI will send a real nice overview of all Telegram chats here."
+            )
         )
     elif key == "done":
         update.callback_query.answer()
