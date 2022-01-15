@@ -6,12 +6,10 @@ from pathlib import Path
 
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
-    Updater,
     ConversationHandler,
-    PicklePersistence,
     CallbackContext,
     ChatJoinRequestHandler,
-    Filters,
+    Filters, PicklePersistence, Updater,
 )
 
 from content import InfoButtons, get_welcome_message_after_setting_language
@@ -117,9 +115,7 @@ def send_info_options(update: Update, context: CallbackContext, include_follow_u
         ]
     )
 
-    update.effective_message.reply_text(
-        info_question, reply_markup=InlineKeyboardMarkup(buttons)
-    )
+    update.effective_message.reply_text(info_question, reply_markup=InlineKeyboardMarkup(buttons))
 
     return CHOOSING_INFO
 
@@ -196,12 +192,30 @@ def more_info_requested(update: Update, context: CallbackContext) -> int:
 
 def send_done_message(update: Update, context: CallbackContext):
     update.effective_message.reply_text(
+        translate("Ok then! Feel free to hit me up if you need more info.", context)
+    )
+    send_help_message(update, context)
+
+
+def send_help_message(update: Update, context: CallbackContext, ):
+    update.effective_message.reply_text(
         translate(
-            "Ok then! Feel free to hit me up if you need more info. Just type /info to request information, "
-            "/lang to set your preferred language or /start to completely restart this conversation.",
-            context,
+            "You can type /info to request information, "
+            "/lang to set your preferred language or /start to completely restart the welcome conversation. "
+            "Type /deletedata if you want to delete the data associated with your Telegram account. "
+            "This might also help if I behave weirdly.", context
         )
     )
+
+
+def delete_data(update: Update, context: CallbackContext):
+    message = translate(
+        "All data associated with your Telegram account (including your preferred language) has been deleted.", context)
+    context.user_data.clear()
+    update.effective_message.reply_text(message)
+    send_help_message(update, context)
+
+    return ConversationHandler.END
 
 
 def fallback_handler(update: Update, context: CallbackContext):
@@ -212,7 +226,9 @@ def fallback_handler(update: Update, context: CallbackContext):
 
     # TODO: store the message the user sent
     update.effective_message.reply_text(
-        translate("I am not sure how to respond to this. I'm just a simple chat bot ☹", context)
+        translate(
+            "I am not sure how to respond to this ☹. Type /help for more information and troubleshooting.",
+            context)
     )
 
 
@@ -221,7 +237,7 @@ def main() -> None:
                       persistence=PicklePersistence(filename=str(Path(__file__).parents[1] / "data" / "user_data")))
     dispatcher = updater.dispatcher
 
-    handler = ConversationHandler(
+    conversation_handler = ConversationHandler(
         entry_points=[
             ChatJoinRequestHandler(start_conversation),
             PrivateConversationCommandHandler("start", start_conversation),
@@ -234,7 +250,11 @@ def main() -> None:
             CHOOSING_MORE_INFO: [PrivateConversationCallbackQueryHandler(more_info_requested)],
         },
         fallbacks=[
-            PrivateConversationCallbackQueryHandler(fallback_handler),  # this does not seem to work
+            # register the deletedata handler from within the conversation handler in order to also delete the
+            # conversation state by returning ConversationHandler.END in delete_data.
+            # After registering this conversationhanler, we register another deletedatahandler for when the user is not
+            # currently in a conversation.
+            PrivateConversationCommandHandler("deletedata", delete_data),
             PrivateConversationMessageHandler(filters=Filters.all, callback=fallback_handler),
         ],
         name="xr_welcome_conversation",
@@ -242,10 +262,10 @@ def main() -> None:
         per_chat=False,
     )
 
-    # TODO add help command
-    # TODO add command to reset state / delete user data
-
-    dispatcher.add_handler(handler)
+    # Do not change order
+    dispatcher.add_handler(PrivateConversationCommandHandler("help", send_help_message))
+    dispatcher.add_handler(conversation_handler)
+    dispatcher.add_handler(PrivateConversationCommandHandler("deletedata", delete_data))
 
     updater.start_polling()
 

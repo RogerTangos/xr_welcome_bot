@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# set working directory to script path
-cd "$(basename $( dirname $(dirname "$0")))"
+# set working directory to base path
+cd "$(basename $(dirname $(dirname "$0")))"
 
 # collect all python files and store to a temporary file
 tmp_file=/tmp/xr_welcome_bot_py_files
