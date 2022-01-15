@@ -2,7 +2,7 @@
 
 import gettext
 import logging
-from functools import wraps
+from functools import partial
 
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
@@ -46,32 +46,34 @@ def get_user_language(context: CallbackContext) -> str:
     return context.user_data["language"] if "language" in context.user_data else "en"
 
 
-def user_joined(update: Update, context: CallbackContext) -> int:
+def start_conversation(update: Update, context: CallbackContext) -> int:
+    welcome_message = (
+        "Hi! I'm the XR (Extinction Rebellion) chat bot. I'm here to show you around.\n\n"
+        "Hoi! Ik ben de XR (Extinction Rebellion) chatbot. Ik ben hier om je op weg te helpen."
+    )
+    context.bot.send_message(update.effective_user.id, welcome_message)
+
     ask_for_language(update, context)
 
-    context.bot.approve_chat_join_request(update.effective_chat.id, update.effective_user.id)
+    if update.chat_join_request is not None:
+        context.bot.approve_chat_join_request(update.effective_chat.id, update.effective_user.id)
 
-    # FIXME the state does not seem to be updated after a join request
     return CHOOSING_LANGUAGE
 
 
-def ask_for_language(update: Update, context: CallbackContext) -> int:
+def ask_for_language(update: Update, context: CallbackContext, set_language_only: bool = False) -> int:
     # TODO: if the update is a join request, and we already have a user context, don't send any message
     #   but return ConversationHandler.END instead
-    keyboard = [
+    buttons = [
         [
             InlineKeyboardButton(text="Nederlands", callback_data="nl"),
             InlineKeyboardButton(text="English", callback_data="en"),
         ],
     ]
-    markup = InlineKeyboardMarkup(keyboard)
-    welcome_message = (
-        "Hi! I'm the XR (Extinction Rebellion) welcome bot. "
-        "I'm here to show you around. What's your preferred language?\n\n"
-        "Hoi! Ik ben de XR (Extinction Rebellion) welkomsrobot. "
-        "Ik ben hier om je op weg te helpen. Welke taal spreek je?"
-    )
-    context.bot.send_message(update.effective_user.id, welcome_message, reply_markup=markup)
+    context.bot.send_message(update.effective_user.id, "What's your preferred language?\n\nWelke taal spreek je?",
+                             reply_markup=InlineKeyboardMarkup(buttons))
+
+    context.user_data["set_language_only"] = set_language_only
 
     return CHOOSING_LANGUAGE
 
@@ -90,18 +92,26 @@ def language_selected(update: Update, context: CallbackContext) -> int:
         translate("Great! I will communicate in English with you from now on.", context)
     )
 
-    send_info_options(update, context)
+    end_conversation = context.user_data["set_language_only"] if "set_language_only" in context.user_data else False
+    del context.user_data["set_language_only"]
 
-    return CHOOSING_INFO
+    if end_conversation:
+        return ConversationHandler.END
+
+    return send_info_options(update, context, include_follow_up_message=True)
 
 
-def send_info_options(update: Update, context: CallbackContext):
-    follow_up_message = translate(
-        "As a new rebel, you might have some questions. "
-        "The Q&A Telegram Channel is really good for that. You should join it 👉 {link} 💬\n\n"
-        "However, we've also prepared some information for you to start with.",
-        context,
-    ).format(link="https://t.me/+ttV6Jfcrpoc5YTE5")
+def send_info_options(update: Update, context: CallbackContext, include_follow_up_message=False) -> int:
+    if include_follow_up_message:
+        follow_up_message = translate(
+            "As a new rebel, you might have some questions. "
+            "The Q&A Telegram Channel is really good for that. You should join it 👉 {link} 💬\n\n"
+            "However, we've also prepared some information for you to start with.",
+            context,
+        ).format(link="https://t.me/+ttV6Jfcrpoc5YTE5")
+        update.effective_message.reply_text(follow_up_message)
+
+    info_question = translate("Are you interested in knowing more about any of the following topics?", context)
 
     buttons = []
     for document in Documents:
@@ -134,8 +144,10 @@ def send_info_options(update: Update, context: CallbackContext):
     )
 
     update.effective_message.reply_text(
-        follow_up_message, reply_markup=InlineKeyboardMarkup(buttons)
+        info_question, reply_markup=InlineKeyboardMarkup(buttons)
     )
+
+    return CHOOSING_INFO
 
 
 def info_requested(update: Update, context: CallbackContext) -> int:
@@ -146,7 +158,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
         try:
             doc = Documents[doc_key].value
             with open(
-                f"files/{get_user_language(context)}/{doc['filename']}", mode="rb"
+                    f"files/{get_user_language(context)}/{doc['filename']}", mode="rb"
             ) as file:  # TODO i18n
                 update.effective_message.reply_text(
                     translate("Just a second, I'm sending you a file.", context)
@@ -155,7 +167,8 @@ def info_requested(update: Update, context: CallbackContext) -> int:
                 context.bot.send_document(
                     chat_id=update.effective_chat.id,
                     document=file,
-                    filename=f"{translate(doc['description'], context)}.pdf",  # FIXME remove question marks from filenames
+                    filename=f"{translate(doc['description'], context)}.pdf",
+                    # FIXME remove question marks from filenames
                 )
         except Exception:
             update.effective_message.reply_text(
@@ -206,8 +219,7 @@ def more_info_requested(update: Update, context: CallbackContext) -> int:
         send_done_message(update, context)
         return ConversationHandler.END
     elif answer == "yes":
-        send_info_options(update, context)
-        return CHOOSING_INFO
+        return send_info_options(update, context)
     else:
         # ignore invalid button clicks
         return CHOOSING_MORE_INFO
@@ -216,7 +228,8 @@ def more_info_requested(update: Update, context: CallbackContext) -> int:
 def send_done_message(update: Update, context: CallbackContext):
     update.effective_message.reply_text(
         translate(
-            "Ok then! Feel free to hit me up if you need more info. Just type /start to restart this conversation.",
+            "Ok then! Feel free to hit me up if you need more info. Just type /info to request information, "
+            "/lang to set your preferred language or /start to completely restart this conversation.",
             context,
         )
     )
@@ -240,8 +253,10 @@ def main() -> None:
 
     handler = ConversationHandler(
         entry_points=[
-            ChatJoinRequestHandler(user_joined),
-            PrivateConversationCommandHandler("start", ask_for_language),
+            ChatJoinRequestHandler(start_conversation),
+            PrivateConversationCommandHandler("start", start_conversation),
+            PrivateConversationCommandHandler("lang", partial(ask_for_language, set_language_only=True)),
+            PrivateConversationCommandHandler("info", send_info_options)
         ],
         states={
             CHOOSING_LANGUAGE: [PrivateConversationCallbackQueryHandler(language_selected)],
