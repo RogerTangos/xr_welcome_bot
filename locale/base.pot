@@ -8,36 +8,62 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-13 23:52+0000\n"
+"POT-Creation-Date: 2022-01-15 20:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: documents.py:11
-msgid "Why does XR exist? (the crisis)"
-msgstr ""
-
-#: documents.py:15
-msgid "What does XR do? (the solution)"
-msgstr ""
-
-#: documents.py:19
-msgid "How is XR organized? (the logistics)"
-msgstr ""
-
-#: documents.py:23
-msgid "But really, how does this work? (the reality)"
-msgstr ""
-
-#: welcome_bot.py:116
+#: src/welcome_bot.py:79
 msgid "Great! I will communicate in English with you from now on."
 msgstr ""
 
-#: welcome_bot.py:127
+#: src/welcome_bot.py:96
+msgid "Are you interested in knowing more about any of the following topics?"
+msgstr ""
+
+#: src/welcome_bot.py:113
+msgid "Thanks, I'm all set. (end this conversation)"
+msgstr ""
+
+#: src/welcome_bot.py:136
+msgid "Just a second, I'm sending you a file."
+msgstr ""
+
+#: src/welcome_bot.py:147
+#, python-brace-format
+msgid ""
+"Oops, seems like something went wrong. I cannot find or open the document "
+"you requested: '{key}'."
+msgstr ""
+
+#: src/welcome_bot.py:168
+msgid "Yes"
+msgstr ""
+
+#: src/welcome_bot.py:169
+msgid "No"
+msgstr ""
+
+#: src/welcome_bot.py:174
+msgid "Would you like any more information?"
+msgstr ""
+
+#: src/welcome_bot.py:199
+msgid ""
+"Ok then! Feel free to hit me up if you need more info. Just type /info to "
+"request information, /lang to set your preferred language or /start to "
+"completely restart this conversation."
+msgstr ""
+
+#: src/welcome_bot.py:214
+msgid "I am not sure how to respond to this. I'm just a simple chat bot ☹"
+msgstr ""
+
+#: src/content.py:11
 #, python-brace-format
 msgid ""
 "As a new rebel, you might have some questions. The Q&A Telegram Channel is "
@@ -46,49 +72,44 @@ msgid ""
 "However, we've also prepared some information for you to start with."
 msgstr ""
 
-#: welcome_bot.py:146
-msgid "What are the local communication channels? (telegram chats)"
+#: src/content.py:20
+msgid "Why does XR exist? (the crisis)"
 msgstr ""
 
-#: welcome_bot.py:154
-msgid "Thanks, I'm all set. (end this conversation)"
+#: src/content.py:22
+msgid "Why XR exists.pdf"
 msgstr ""
 
-#: welcome_bot.py:177
-msgid "Just a second, I'm sending you a file."
+#: src/content.py:25
+msgid "What does XR do? (the solution)"
 msgstr ""
 
-#: welcome_bot.py:188
-#, python-brace-format
-msgid ""
-"Oops, seems like something went wrong. I cannot find or open the document "
-"you requested: '{doc_key}'."
+#: src/content.py:27
+msgid "What XR does.pdf"
 msgstr ""
 
-#: welcome_bot.py:194
+#: src/content.py:30
+msgid "How is XR organized? (the logistics)"
+msgstr ""
+
+#: src/content.py:32
+msgid "How XR is organized.pdf"
+msgstr ""
+
+#: src/content.py:35
+msgid "But really, how does this work? (the reality)"
+msgstr ""
+
+#: src/content.py:37
+msgid "How XR is organized (unofficial guide).pdf"
+msgstr ""
+
+#: src/content.py:40
+msgid "How do we communicate? (telegram chats)"
+msgstr ""
+
+#: src/content.py:41
 msgid ""
 "## TODO ##\n"
 "I will send a real nice overview of all Telegram chats here."
-msgstr ""
-
-#: welcome_bot.py:209
-msgid "Yes"
-msgstr ""
-
-#: welcome_bot.py:210
-msgid "No"
-msgstr ""
-
-#: welcome_bot.py:215
-msgid "Would you like any more information?"
-msgstr ""
-
-#: welcome_bot.py:243
-msgid ""
-"Ok then! Feel free to hit me up if you need more info. Just type /start to "
-"restart this conversation."
-msgstr ""
-
-#: welcome_bot.py:257
-msgid "I am not sure how to respond to this. I'm just a simple robot :-("
 msgstr ""

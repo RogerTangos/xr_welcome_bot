@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import gettext
 import logging
 from functools import partial
 
@@ -14,13 +13,15 @@ from telegram.ext import (
     Filters,
 )
 
-from documents import Documents
-from handlers.privateconversationcallbackqueryhandler import (
+from content import InfoButtons, get_welcome_message_after_setting_language
+from data.secret import API_TOKEN
+from src.handlers import (
     PrivateConversationCallbackQueryHandler,
+    PrivateConversationCommandHandler,
+    PrivateConversationMessageHandler,
 )
-from handlers.privateconversationcommandhandler import PrivateConversationCommandHandler
-from handlers.privateconversationmessagehandler import PrivateConversationMessageHandler
-from secret import API_TOKEN
+from src.i18n import translate
+from src.info_buttons import FileInfoButton, TextInfoButton, InfoButton
 
 # Enable logging
 logging.basicConfig(
@@ -30,20 +31,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 CHOOSING_LANGUAGE, CHOOSING_INFO, CHOOSING_MORE_INFO = range(3)
-
-LANG_NL = gettext.translation("nl_NL", localedir="locale", languages=["nl_NL"])
-
-
-def translate(text: str, context: CallbackContext) -> str:
-    lang = get_user_language(context)
-    if lang == "nl":
-        return LANG_NL.gettext(text)
-    else:
-        return gettext.gettext(text)
-
-
-def get_user_language(context: CallbackContext) -> str:
-    return context.user_data["language"] if "language" in context.user_data else "en"
 
 
 def start_conversation(update: Update, context: CallbackContext) -> int:
@@ -93,7 +80,8 @@ def language_selected(update: Update, context: CallbackContext) -> int:
     )
 
     end_conversation = context.user_data["set_language_only"] if "set_language_only" in context.user_data else False
-    del context.user_data["set_language_only"]
+    if "set_language_only" in context.user_data:
+        del context.user_data["set_language_only"]
 
     if end_conversation:
         return ConversationHandler.END
@@ -103,42 +91,27 @@ def language_selected(update: Update, context: CallbackContext) -> int:
 
 def send_info_options(update: Update, context: CallbackContext, include_follow_up_message=False) -> int:
     if include_follow_up_message:
-        follow_up_message = translate(
-            "As a new rebel, you might have some questions. "
-            "The Q&A Telegram Channel is really good for that. You should join it 👉 {link} 💬\n\n"
-            "However, we've also prepared some information for you to start with.",
-            context,
-        ).format(link="https://t.me/+ttV6Jfcrpoc5YTE5")
-        update.effective_message.reply_text(follow_up_message)
+        update.effective_message.reply_text(get_welcome_message_after_setting_language(context))
 
     info_question = translate("Are you interested in knowing more about any of the following topics?", context)
 
     buttons = []
-    for document in Documents:
-        buttons.append(
-            [
-                InlineKeyboardButton(
-                    text=translate(document.value["description"], context),
-                    callback_data=f"doc_{document.name}",
-                )
-            ]
-        )
+    for item in InfoButtons:
+        if isinstance(item.value, InfoButton):
+            buttons.append(
+                [
+                    InlineKeyboardButton(
+                        text=item.value.get_button_text(context),
+                        callback_data=item.name,
+                    )
+                ]
+            )
 
     buttons.append(
         [
             InlineKeyboardButton(
-                text=translate(
-                    "What are the local communication channels? (telegram chats)", context
-                ),
-                callback_data="chats",
-            )
-        ]
-    )
-    buttons.append(
-        [
-            InlineKeyboardButton(
                 text=translate("Thanks, I'm all set. (end this conversation)", context),
-                callback_data="done",
+                callback_data="__DONE",
             )
         ]
     )
@@ -153,45 +126,40 @@ def send_info_options(update: Update, context: CallbackContext, include_follow_u
 def info_requested(update: Update, context: CallbackContext) -> int:
     key = update["callback_query"]["data"]
 
-    if key[0:4] == "doc_":
-        doc_key = key[4:]
-        try:
-            doc = Documents[doc_key].value
-            with open(
-                    f"files/{get_user_language(context)}/{doc['filename']}", mode="rb"
-            ) as file:  # TODO i18n
-                update.effective_message.reply_text(
-                    translate("Just a second, I'm sending you a file.", context)
-                )
+    try:
+        button = InfoButtons[key].value
 
-                context.bot.send_document(
-                    chat_id=update.effective_chat.id,
-                    document=file,
-                    filename=f"{translate(doc['description'], context)}.pdf",
-                    # FIXME remove question marks from filenames
+        if isinstance(button, FileInfoButton):
+            try:
+                with open(button.get_file_path(context), mode="rb") as file:
+                    update.effective_message.reply_text(
+                        translate("Just a second, I'm sending you a file.", context)
+                    )
+
+                    context.bot.send_document(
+                        chat_id=update.effective_chat.id,
+                        document=file,
+                        filename=f"{button.get_user_filename(context)}.pdf",
+                    )
+            except Exception:
+                update.effective_message.reply_text(
+                    translate(
+                        "Oops, seems like something went wrong. "
+                        "I cannot find or open the document you requested: '{key}'.",
+                        context,
+                    ).format(key=key)
                 )
-        except Exception:
-            update.effective_message.reply_text(
-                translate(
-                    "Oops, seems like something went wrong. I cannot find or open the document you requested: '{doc_key}'.",
-                    context,
-                ).format(doc_key=doc_key)
-            )
-    elif key == "chats":
-        # TODO
-        update.effective_message.reply_text(
-            translate(
-                "## TODO ##\nI will send a real nice overview of all Telegram chats here.", context
-            )
-        )
-    elif key == "done":
+        elif isinstance(button, TextInfoButton):
+            update.effective_message.reply_text(button.get_info_text(context))
+    except KeyError:
         update.callback_query.answer()
-        send_done_message(update, context)
-        return ConversationHandler.END
-    else:
-        # Ignore invalid button clicks
-        update.callback_query.answer()
-        return CHOOSING_INFO
+
+        if key == "__DONE":
+            send_done_message(update, context)
+            return ConversationHandler.END
+        else:
+            # Ignore invalid button clicks
+            return CHOOSING_INFO
 
     update.callback_query.answer()
 
@@ -243,12 +211,12 @@ def fallback_handler(update: Update, context: CallbackContext):
 
     # TODO: store the message the user sent
     update.effective_message.reply_text(
-        translate("I am not sure how to respond to this. I'm just a simple robot :-(", context)
+        translate("I am not sure how to respond to this. I'm just a simple chat bot ☹", context)
     )
 
 
 def main() -> None:
-    updater = Updater(API_TOKEN, persistence=PicklePersistence(filename="user_data"))
+    updater = Updater(API_TOKEN, persistence=PicklePersistence(filename="../data/user_data"))
     dispatcher = updater.dispatcher
 
     handler = ConversationHandler(
@@ -271,6 +239,9 @@ def main() -> None:
         persistent=True,
         per_chat=False,
     )
+
+    # TODO add help command
+    # TODO add command to reset state / delete user data
 
     dispatcher.add_handler(handler)
 
