@@ -2,6 +2,7 @@
 
 import logging
 from functools import partial
+from pathlib import Path
 
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
@@ -216,7 +217,8 @@ def fallback_handler(update: Update, context: CallbackContext):
 
 
 def main() -> None:
-    updater = Updater(API_TOKEN, persistence=PicklePersistence(filename="../data/user_data"))
+    updater = Updater(API_TOKEN,
+                      persistence=PicklePersistence(filename=str(Path(__file__).parents[1] / "data" / "user_data")))
     dispatcher = updater.dispatcher
 
     handler = ConversationHandler(
