@@ -15,7 +15,7 @@ class PrivateConversationCallbackQueryHandler(CallbackQueryHandler):
 
 class PrivateConversationCommandHandler(CommandHandler):
     def check_update(
-            self, update: object
+        self, update: object
     ) -> Optional[Union[bool, Tuple[List[str], Optional[Union[bool, Dict]]]]]:
         if isinstance(update, Update) and update.effective_chat:
             if update.effective_chat.type != update.effective_chat.PRIVATE:

@@ -18,15 +18,24 @@ class InfoButton(ABC):
 
 # Button that sends the user a file when clicked
 class FileInfoButton(InfoButton):
-    def __init__(self, button_text_provider: Callable[[CallbackContext], str], local_filename: str,
-                 user_filename_provider: Callable[[CallbackContext], str]):
+    def __init__(
+        self,
+        button_text_provider: Callable[[CallbackContext], str],
+        local_filename: str,
+        user_filename_provider: Callable[[CallbackContext], str],
+    ):
         super().__init__(button_text_provider)
         self.__local_filename = local_filename
         self.__user_filename_provider = user_filename_provider
 
     def get_file_path(self, context: CallbackContext) -> Path:
-        return (Path(__file__).parents[1] / "resources" / "files" /
-                get_user_language(context) / self.__local_filename)
+        return (
+            Path(__file__).parents[1]
+            / "resources"
+            / "files"
+            / get_user_language(context)
+            / self.__local_filename
+        )
 
     def get_user_filename(self, context: CallbackContext) -> str:
         return self.__user_filename_provider(context)
@@ -34,8 +43,11 @@ class FileInfoButton(InfoButton):
 
 # Button that sends the user a message when clicked
 class TextInfoButton(InfoButton):
-    def __init__(self, button_text_provider: Callable[[CallbackContext], str],
-                 info_text_provider: Callable[[CallbackContext], str]):
+    def __init__(
+        self,
+        button_text_provider: Callable[[CallbackContext], str],
+        info_text_provider: Callable[[CallbackContext], str],
+    ):
         super().__init__(button_text_provider)
         self.__info_text_provider = info_text_provider
 

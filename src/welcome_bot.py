@@ -9,7 +9,9 @@ from telegram.ext import (
     ConversationHandler,
     CallbackContext,
     ChatJoinRequestHandler,
-    Filters, PicklePersistence, Updater,
+    Filters,
+    PicklePersistence,
+    Updater,
 )
 
 from content import InfoButtons, get_welcome_message_after_setting_language
@@ -34,7 +36,9 @@ CHOOSING_LANGUAGE, CHOOSING_INFO, CHOOSING_MORE_INFO = range(3)
 
 def approve_join_request(update: Update, context: CallbackContext):
     if update.chat_join_request is not None:
-        context.bot.approve_chat_join_request(update.effective_chat.id, update.effective_user.id)
+        context.bot.approve_chat_join_request(
+            update.effective_chat.id, update.effective_user.id
+        )
 
 
 def start_conversation(update: Update, context: CallbackContext) -> int:
@@ -57,15 +61,20 @@ def start_conversation(update: Update, context: CallbackContext) -> int:
     return CHOOSING_LANGUAGE
 
 
-def ask_for_language(update: Update, context: CallbackContext, set_language_only: bool = False) -> int:
+def ask_for_language(
+    update: Update, context: CallbackContext, set_language_only: bool = False
+) -> int:
     buttons = [
         [
             InlineKeyboardButton(text="Nederlands", callback_data="nl"),
             InlineKeyboardButton(text="English", callback_data="en"),
         ],
     ]
-    context.bot.send_message(update.effective_user.id, "What's your preferred language?\n\nWelke taal spreek je?",
-                             reply_markup=InlineKeyboardMarkup(buttons))
+    context.bot.send_message(
+        update.effective_user.id,
+        "What's your preferred language?\n\nWelke taal spreek je?",
+        reply_markup=InlineKeyboardMarkup(buttons),
+    )
 
     context.user_data["set_language_only"] = set_language_only
 
@@ -86,7 +95,11 @@ def language_selected(update: Update, context: CallbackContext) -> int:
         translate("Great! I will communicate in English with you from now on.", context)
     )
 
-    end_conversation = context.user_data["set_language_only"] if "set_language_only" in context.user_data else False
+    end_conversation = (
+        context.user_data["set_language_only"]
+        if "set_language_only" in context.user_data
+        else False
+    )
     if "set_language_only" in context.user_data:
         del context.user_data["set_language_only"]
 
@@ -96,11 +109,17 @@ def language_selected(update: Update, context: CallbackContext) -> int:
     return send_info_options(update, context, include_follow_up_message=True)
 
 
-def send_info_options(update: Update, context: CallbackContext, include_follow_up_message=False) -> int:
+def send_info_options(
+    update: Update, context: CallbackContext, include_follow_up_message=False
+) -> int:
     if include_follow_up_message:
-        update.effective_message.reply_text(get_welcome_message_after_setting_language(context))
+        update.effective_message.reply_text(
+            get_welcome_message_after_setting_language(context)
+        )
 
-    info_question = translate("Are you interested in knowing more about any of the following topics?", context)
+    info_question = translate(
+        "Are you interested in knowing more about any of the following topics?", context
+    )
 
     buttons = []
     for item in InfoButtons:
@@ -123,7 +142,9 @@ def send_info_options(update: Update, context: CallbackContext, include_follow_u
         ]
     )
 
-    update.effective_message.reply_text(info_question, reply_markup=InlineKeyboardMarkup(buttons))
+    update.effective_message.reply_text(
+        info_question, reply_markup=InlineKeyboardMarkup(buttons)
+    )
 
     return CHOOSING_INFO
 
@@ -211,7 +232,8 @@ def send_help_message(update: Update, context: CallbackContext):
             "You can type /info to request information, "
             "/lang to set your preferred language or /start to completely restart the welcome conversation. "
             "Type /deletedata if you want to delete the data associated with your Telegram account. "
-            "This might also help if I behave weirdly.", context
+            "This might also help if I behave weirdly.",
+            context,
         )
     )
 
@@ -219,7 +241,9 @@ def send_help_message(update: Update, context: CallbackContext):
 def delete_data(update: Update, context: CallbackContext) -> int:
     # Send messages before clearing user data, so they're still in the user's preferred language
     message = translate(
-        "All data associated with your Telegram account (including your preferred language) has been deleted.", context)
+        "All data associated with your Telegram account (including your preferred language) has been deleted.",
+        context,
+    )
     update.effective_message.reply_text(message)
     send_help_message(update, context)
 
@@ -238,26 +262,37 @@ def fallback_handler(update: Update, context: CallbackContext):
     update.effective_message.reply_text(
         translate(
             "I am not sure how to respond to this ☹. Type /help for more information and troubleshooting.",
-            context)
+            context,
+        )
     )
 
 
 def main() -> None:
-    updater = Updater(API_TOKEN,
-                      persistence=PicklePersistence(filename=str(Path(__file__).parents[1] / "data" / "user_data")))
+    updater = Updater(
+        API_TOKEN,
+        persistence=PicklePersistence(
+            filename=str(Path(__file__).parents[1] / "data" / "user_data")
+        ),
+    )
     dispatcher = updater.dispatcher
 
     conversation_handler = ConversationHandler(
         entry_points=[
             ChatJoinRequestHandler(start_conversation),
             PrivateConversationCommandHandler("start", start_conversation),
-            PrivateConversationCommandHandler("lang", partial(ask_for_language, set_language_only=True)),
-            PrivateConversationCommandHandler("info", send_info_options)
+            PrivateConversationCommandHandler(
+                "lang", partial(ask_for_language, set_language_only=True)
+            ),
+            PrivateConversationCommandHandler("info", send_info_options),
         ],
         states={
-            CHOOSING_LANGUAGE: [PrivateConversationCallbackQueryHandler(language_selected)],
+            CHOOSING_LANGUAGE: [
+                PrivateConversationCallbackQueryHandler(language_selected)
+            ],
             CHOOSING_INFO: [PrivateConversationCallbackQueryHandler(info_requested)],
-            CHOOSING_MORE_INFO: [PrivateConversationCallbackQueryHandler(more_info_requested)],
+            CHOOSING_MORE_INFO: [
+                PrivateConversationCallbackQueryHandler(more_info_requested)
+            ],
         },
         fallbacks=[
             # Accept any join requests when the user is currently in a conversation
@@ -267,7 +302,9 @@ def main() -> None:
             # After registering this conversationhanler, we register another deletedatahandler for when the user is not
             # currently in a conversation.
             PrivateConversationCommandHandler("deletedata", delete_data),
-            PrivateConversationMessageHandler(filters=Filters.all, callback=fallback_handler),
+            PrivateConversationMessageHandler(
+                filters=Filters.all, callback=fallback_handler
+            ),
         ],
         name="xr_welcome_conversation",
         persistent=True,
