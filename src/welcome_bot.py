@@ -32,24 +32,32 @@ logger = logging.getLogger(__name__)
 CHOOSING_LANGUAGE, CHOOSING_INFO, CHOOSING_MORE_INFO = range(3)
 
 
+def approve_join_request(update: Update, context: CallbackContext):
+    if update.chat_join_request is not None:
+        context.bot.approve_chat_join_request(update.effective_chat.id, update.effective_user.id)
+
+
 def start_conversation(update: Update, context: CallbackContext) -> int:
+    if update.chat_join_request is not None and "language" in context.user_data:
+        # We already know this user as we already stored their language. Just accept their join request without
+        # starting a conversation.
+        approve_join_request(update, context)
+        return ConversationHandler.END
+
     welcome_message = (
         "Hi! I'm the XR (Extinction Rebellion) chat bot. I'm here to show you around.\n\n"
         "Hoi! Ik ben de XR (Extinction Rebellion) chatbot. Ik ben hier om je op weg te helpen."
     )
     context.bot.send_message(update.effective_user.id, welcome_message)
 
-    ask_for_language(update, context)
+    approve_join_request(update, context)
 
-    if update.chat_join_request is not None:
-        context.bot.approve_chat_join_request(update.effective_chat.id, update.effective_user.id)
+    ask_for_language(update, context)
 
     return CHOOSING_LANGUAGE
 
 
 def ask_for_language(update: Update, context: CallbackContext, set_language_only: bool = False) -> int:
-    # TODO: if the update is a join request, and we already have a user context, don't send any message
-    #   but return ConversationHandler.END instead
     buttons = [
         [
             InlineKeyboardButton(text="Nederlands", callback_data="nl"),
@@ -197,7 +205,7 @@ def send_done_message(update: Update, context: CallbackContext):
     send_help_message(update, context)
 
 
-def send_help_message(update: Update, context: CallbackContext, ):
+def send_help_message(update: Update, context: CallbackContext):
     update.effective_message.reply_text(
         translate(
             "You can type /info to request information, "
@@ -208,12 +216,14 @@ def send_help_message(update: Update, context: CallbackContext, ):
     )
 
 
-def delete_data(update: Update, context: CallbackContext):
+def delete_data(update: Update, context: CallbackContext) -> int:
+    # Send messages before clearing user data, so they're still in the user's preferred language
     message = translate(
         "All data associated with your Telegram account (including your preferred language) has been deleted.", context)
-    context.user_data.clear()
     update.effective_message.reply_text(message)
     send_help_message(update, context)
+
+    context.user_data.clear()
 
     return ConversationHandler.END
 
@@ -250,6 +260,8 @@ def main() -> None:
             CHOOSING_MORE_INFO: [PrivateConversationCallbackQueryHandler(more_info_requested)],
         },
         fallbacks=[
+            # Accept any join requests when the user is currently in a conversation
+            ChatJoinRequestHandler(approve_join_request),
             # register the deletedata handler from within the conversation handler in order to also delete the
             # conversation state by returning ConversationHandler.END in delete_data.
             # After registering this conversationhanler, we register another deletedatahandler for when the user is not
