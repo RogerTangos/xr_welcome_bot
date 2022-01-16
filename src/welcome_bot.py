@@ -86,7 +86,7 @@ def language_selected(update: Update, context: CallbackContext) -> int:
     update.callback_query.answer()
 
     if lang != "en" and lang != "nl":
-        send_unrecognized_button_click_message(update, context)
+        send_unrecognized_button_click_message(update)
         return CHOOSING_LANGUAGE
 
     context.user_data["language"] = lang
@@ -184,7 +184,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
             send_done_message(update, context)
             return ConversationHandler.END
         else:
-            send_unrecognized_button_click_message(update, context)
+            send_unrecognized_button_click_message(update)
             return CHOOSING_INFO
 
     update.callback_query.answer()
@@ -217,7 +217,7 @@ def more_info_requested(update: Update, context: CallbackContext) -> int:
     elif InfoButtons.string_in_buttons(answer):
         return info_requested(update, context)
     else:
-        send_unrecognized_button_click_message(update, context)
+        send_unrecognized_button_click_message(update)
         return CHOOSING_MORE_INFO
 
 
@@ -240,7 +240,7 @@ def send_help_message(update: Update, context: CallbackContext):
     )
 
 
-def send_unrecognized_button_click_message(update: Update, context: CallbackContext):
+def send_unrecognized_button_click_message(update: Update):
     # Respond to invalid button clicks
     # Must be in multiple languages because language context may not be set
     update.effective_message.reply_text(
@@ -253,7 +253,7 @@ def send_unrecognized_button_click_message(update: Update, context: CallbackCont
 
 def fallback_handler(update: Update, context: CallbackContext):
     if update.callback_query is not None:
-        send_unrecognized_button_click_message(update, context)
+        send_unrecognized_button_click_message(update)
         update.callback_query.answer()
         return
 
