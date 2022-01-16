@@ -302,14 +302,8 @@ def main() -> None:
             ChatJoinRequestHandler(approve_join_request),
             # register the deletedata handler from within the conversation handler in order to also delete the
             # conversation state by returning ConversationHandler.END in delete_data.
-            # After registering this conversationhanler, we register another deletedatahandler for when the user is not
-            # currently in a conversation.
-            # Same goes for the fallback message and callbackquery handlers
+            # We register another deletedatahandler later for when the user is not currently in a conversation.
             PrivateConversationCommandHandler("deletedata", delete_data),
-            PrivateConversationCallbackQueryHandler(fallback_handler),
-            PrivateConversationMessageHandler(
-                filters=Filters.all, callback=fallback_handler
-            ),
         ],
         name="xr_welcome_conversation",
         persistent=True,
@@ -323,7 +317,8 @@ def main() -> None:
 
     dispatcher.add_handler(conversation_handler)
 
-    # Add handlers for when the user is not currently in a conversation.
+    # Add handlers for updates that the ConversationHandler doesn't handle
+    # and updates that are received when the user is not currently in a conversation.
     dispatcher.add_handler(PrivateConversationCommandHandler("deletedata", delete_data))
     dispatcher.add_handler(PrivateConversationCallbackQueryHandler(fallback_handler))
     dispatcher.add_handler(
