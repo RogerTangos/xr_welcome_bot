@@ -73,8 +73,7 @@ msgstr ""
 
 #: src/welcome_bot.py:267
 msgid ""
-"I am not sure how to respond to this ☹. Type /help for more information and "
-"troubleshooting."
+"I am not sure how to respond to this ☹. Type /help for more information."
 msgstr ""
 
 #: src/content.py:11

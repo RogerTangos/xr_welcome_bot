@@ -264,7 +264,7 @@ def fallback_handler(update: Update, context: CallbackContext):
     # TODO: store the message the user sent
     update.effective_message.reply_text(
         translate(
-            "I am not sure how to respond to this ☹. Type /help for more information and troubleshooting.",
+            "I am not sure how to respond to this ☹. Type /help for more information.",
             context,
         )
     )
