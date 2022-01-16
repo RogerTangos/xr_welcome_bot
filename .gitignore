@@ -3,3 +3,4 @@
 .idea
 /src/secret.py
 /data/user_data
+*.out
