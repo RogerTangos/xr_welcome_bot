@@ -86,7 +86,7 @@ def language_selected(update: Update, context: CallbackContext) -> int:
     update.callback_query.answer()
 
     if lang != "en" and lang != "nl":
-        # ignore invalid button clicks
+        send_unrecognized_button_click_message(update)
         return CHOOSING_LANGUAGE
 
     context.user_data["language"] = lang
@@ -184,7 +184,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
             send_done_message(update, context)
             return ConversationHandler.END
         else:
-            # Ignore invalid button clicks
+            send_unrecognized_button_click_message(update)
             return CHOOSING_INFO
 
     update.callback_query.answer()
@@ -217,7 +217,7 @@ def more_info_requested(update: Update, context: CallbackContext) -> int:
     elif InfoButtons.string_in_buttons(answer):
         return info_requested(update, context)
     else:
-        # ignore invalid button clicks
+        send_unrecognized_button_click_message(update)
         return CHOOSING_MORE_INFO
 
 
@@ -231,39 +231,29 @@ def send_done_message(update: Update, context: CallbackContext):
 def send_help_message(update: Update, context: CallbackContext):
     update.effective_message.reply_text(
         translate(
-            "You can type /info to request information, "
-            "/lang to set your preferred language or /start to completely restart the welcome conversation. "
-            "Type /deletedata if you want to delete the data associated with your Telegram account. "
-            "(I store your user id, language and a number that indicates the current conversation progress.) ",
+            "You can type\n"
+            "/info to request information,\n"
+            "/lang to set your preferred language or\n"
+            "/start to completely restart the welcome conversation.",
             context,
         )
     )
 
 
-def delete_data(update: Update, context: CallbackContext) -> int:
-    # Send messages before clearing user data, so they're still in the user's preferred language
-    message = translate(
-        "All data associated with your Telegram account (including your preferred language) has been deleted.",
-        context,
+def send_unrecognized_button_click_message(update: Update):
+    # Respond to invalid button clicks
+    # Must be in multiple languages because language context may not be set
+    update.effective_message.reply_text(
+        "😖 Sorry, ik kan niet meer op die knop reageren. "
+        "Type /start om het welkomsgesprek helemaal opnieuw te starten.\n\n"
+        "😖 Sorry, I can't respond to that button anymore. "
+        "Type /start to completely restart the welcome conversation.",
     )
-    update.effective_message.reply_text(message)
-    send_help_message(update, context)
-
-    context.user_data.clear()
-
-    return ConversationHandler.END
 
 
 def fallback_handler(update: Update, context: CallbackContext):
     if update.callback_query is not None:
-        # Respond to invalid button clicks
-        # Must be in multiple languages because language context may not be set
-        update.effective_message.reply_text(
-            "😖 Sorry, ik kan niet meer op die knop reageren. "
-            "Type /start om het welkomsgesprek helemaal opnieuw te starten.\n\n"
-            "😖 Sorry, I can't respond to that button anymore. "
-            "Type /start to completely restart the welcome conversation.",
-        )
+        send_unrecognized_button_click_message(update)
         update.callback_query.answer()
         return
 
@@ -302,10 +292,6 @@ def main() -> None:
         fallbacks=[
             # Accept any join requests when the user is currently in a conversation
             ChatJoinRequestHandler(approve_join_request),
-            # register the deletedata handler from within the conversation handler in order to also delete the
-            # conversation state by returning ConversationHandler.END in delete_data.
-            # We register another deletedatahandler later for when the user is not currently in a conversation.
-            PrivateConversationCommandHandler("deletedata", delete_data),
         ],
         name="xr_welcome_conversation",
         persistent=True,
@@ -321,7 +307,6 @@ def main() -> None:
 
     # Add handlers for updates that the ConversationHandler doesn't handle
     # and updates that are received when the user is not currently in a conversation.
-    dispatcher.add_handler(PrivateConversationCommandHandler("deletedata", delete_data))
     dispatcher.add_handler(PrivateConversationCallbackQueryHandler(fallback_handler))
     dispatcher.add_handler(
         PrivateConversationMessageHandler(filters=Filters.all, callback=fallback_handler)
