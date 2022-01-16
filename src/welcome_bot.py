@@ -3,7 +3,7 @@
 import logging
 from functools import partial
 from pathlib import Path
-from typing import Optional, Any
+from typing import Optional
 
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
@@ -16,7 +16,6 @@ from telegram.ext import (
 )
 
 from content import InfoButtons, get_welcome_message_after_setting_language
-from secret import API_TOKEN
 from handlers import (
     PrivateConversationCallbackQueryHandler,
     PrivateConversationCommandHandler,
@@ -24,6 +23,7 @@ from handlers import (
 )
 from i18n import translate
 from info_buttons import FileInfoButton, TextInfoButton, InfoButton
+from secret import API_TOKEN
 
 # Enable logging
 logging.basicConfig(
@@ -63,7 +63,7 @@ def start_conversation(update: Update, context: CallbackContext) -> Optional[int
 
 
 def ask_for_language(
-        update: Update, context: CallbackContext, set_language_only: bool = False
+    update: Update, context: CallbackContext, set_language_only: bool = False
 ) -> int:
     buttons = [
         [
@@ -111,7 +111,7 @@ def language_selected(update: Update, context: CallbackContext) -> int:
 
 
 def send_info_options(
-        update: Update, context: CallbackContext, include_follow_up_message=False
+    update: Update, context: CallbackContext, include_follow_up_message=False
 ) -> int:
     if include_follow_up_message:
         update.effective_message.reply_text(
@@ -256,6 +256,8 @@ def delete_data(update: Update, context: CallbackContext) -> int:
 def fallback_handler(update: Update, context: CallbackContext):
     if update.callback_query is not None:
         # Ignore invalid button clicks
+        # TODO: decide whether we want to send the user a message here
+        #  to notify that they clicked a button that we can no longer respond to
         update.callback_query.answer()
         return
 
@@ -302,7 +304,9 @@ def main() -> None:
             # conversation state by returning ConversationHandler.END in delete_data.
             # After registering this conversationhanler, we register another deletedatahandler for when the user is not
             # currently in a conversation.
+            # Same goes for the fallback message and callbackquery handlers
             PrivateConversationCommandHandler("deletedata", delete_data),
+            PrivateConversationCallbackQueryHandler(fallback_handler),
             PrivateConversationMessageHandler(
                 filters=Filters.all, callback=fallback_handler
             ),
@@ -313,10 +317,20 @@ def main() -> None:
         allow_reentry=True,
     )
 
-    # Do not change order
+    # Help command handler has priority over any other handler,
+    # it should respond even when the user is currently in a conversation.
     dispatcher.add_handler(PrivateConversationCommandHandler("help", send_help_message))
+
     dispatcher.add_handler(conversation_handler)
+
+    # Add handlers for when the user is not currently in a conversation.
     dispatcher.add_handler(PrivateConversationCommandHandler("deletedata", delete_data))
+    dispatcher.add_handler(PrivateConversationCallbackQueryHandler(fallback_handler))
+    dispatcher.add_handler(
+        PrivateConversationMessageHandler(
+            filters=Filters.all, callback=fallback_handler
+        )
+    )
 
     updater.start_polling()
 
