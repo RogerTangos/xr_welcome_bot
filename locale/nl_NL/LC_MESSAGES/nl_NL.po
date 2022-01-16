@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-13 23:52+0000\n"
-"PO-Revision-Date: 2022-01-14 00:54+0100\n"
+"POT-Creation-Date: 2022-01-16 00:41+0000\n"
+"PO-Revision-Date: 2022-01-16 01:44+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -18,61 +18,136 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
 
-#: documents.py:11
-msgid "Why does XR exist? (the crisis)"
-msgstr "Waarom bestaat XR?"
-
-#: documents.py:15
-msgid "What does XR do? (the solution)"
-msgstr "Wat doet XR?"
-
-#: documents.py:19
-msgid "How is XR organized? (the logistics)"
-msgstr "Hoe is XR georganiseerd? (de logistiek)"
-
-#: documents.py:23
-msgid "But really, how does this work? (the reality)"
-msgstr "Maar hoe werkt het echt? (de realiteit)"
-
-#: welcome_bot.py:116
+#: src/welcome_bot.py:96
 msgid "Great! I will communicate in English with you from now on."
 msgstr "Oke! Vanaf nu zal ik je in het Nederlands aanspreken."
 
-#: welcome_bot.py:127
-#, python-brace-format
-msgid ""
-"As a new member, you might have some questions. The Q&A Telegram Channel is "
-"really good for that. You can join it here: {link}\n"
-"\n"
-"However, we've also prepared some information for you to start with."
-msgstr ""
-"Als nieuw lid heb je wellicht wat vragen. Het Q&A-Telegramkanaal is daar "
-"zeer geschikt voor. Je kunt je er hier voor aanmelden: {link}\n"
-"\n"
-"We hebben echter ook wat informatie voor je verzameld om mee te beginnen."
+#: src/welcome_bot.py:122
+msgid "Are you interested in knowing more about any of the following topics?"
+msgstr "Wil je meer weten over een van de volgende onderwerpen?"
 
-#: welcome_bot.py:146
-msgid "What are the local communication channels? (telegram chats)"
-msgstr "Wat zijn de lokale communicatiekanalen? (telegram chats)"
-
-#: welcome_bot.py:154
+#: src/welcome_bot.py:140
 msgid "Thanks, I'm all set. (end this conversation)"
 msgstr "Ik weet genoeg voor nu. (beëindig dit gesprek)"
 
-#: welcome_bot.py:177
-msgid "Please hang on for a second, I'm sending you a file."
+#: src/welcome_bot.py:163
+msgid "Just a second, I'm sending you a file."
 msgstr "Momentje alsjeblieft, ik ben je een bestand aan het sturen."
 
-#: welcome_bot.py:188
+#: src/welcome_bot.py:174
 #, python-brace-format
 msgid ""
 "Oops, seems like something went wrong. I cannot find or open the document "
-"you requested: '{doc_key}'."
+"you requested: '{key}'."
 msgstr ""
 "Oeps, het lijkt erop dat er iets mis is gegaan. Ik kan het document dat je "
-"opvroeg, niet vinden of openen: '{doc_key}'."
+"opvroeg, niet vinden of openen: '{key}'."
 
-#: welcome_bot.py:194
+#: src/welcome_bot.py:195
+msgid "Yes"
+msgstr "Ja"
+
+#: src/welcome_bot.py:196
+msgid "No"
+msgstr "Nee"
+
+#: src/welcome_bot.py:201
+msgid "Would you like any more information?"
+msgstr "Wil je nog meer informatie ontvangen?"
+
+#: src/welcome_bot.py:225
+msgid "Ok then! Feel free to hit me up if you need more info."
+msgstr "Oke! Laat het me weten als je meer informatie nodig hebt."
+
+#: src/welcome_bot.py:233
+msgid ""
+"You can type /info to request information, /lang to set your preferred "
+"language or /start to completely restart the welcome conversation. Type /"
+"deletedata if you want to delete the data associated with your Telegram "
+"account. (I store your user id, language and a number that indicates the "
+"current conversation progress.) "
+msgstr ""
+"Je kunt /info typen om informatie op te vragen, /lang om je taal in te "
+"stellen of /start om het welkomsgesprek helemaal opnieuw te starten. Typ /"
+"deletedata als je alle data die gelinkt is aan je Telegram-account, wilt "
+"verwijderen (ik sla je user id, taal en een nummertje waarmee ik de "
+"voortgang van het gesprek bijhoud op)."
+
+#: src/welcome_bot.py:245
+msgid ""
+"All data associated with your Telegram account (including your preferred "
+"language) has been deleted."
+msgstr ""
+"Alle data die gelinkt is aan je Telegram-account (inclusief je ingestelde "
+"taal) is verwijderd."
+
+#: src/welcome_bot:259
+mesageid ""
+"😖 Sorry, ik kan niet meer op die knop reageren. "
+"Type /start om het welkomsgesprek helemaal opnieuw te starten.\n\n"
+"😖 Sorry, I can't respond to that button anymore. "
+"Type /start to completely restart the welcome conversation."
+messagestr ""
+"😖 Sorry, ik kan niet meer op die knop reageren. "
+"Type /start om het welkomsgesprek helemaal opnieuw te starten.\n\n"
+
+
+#: src/welcome_bot.py:267
+msgid ""
+"I am not sure how to respond to this 🙁. Type /help for more information."
+msgstr ""
+"Ik weet niet hoe ik hierop moet antwoorden 🙁. Typ /help voor meer informatie."
+
+#: src/content.py:11
+#, python-brace-format
+msgid ""
+"As a new rebel, you might have some questions. The Q&A Telegram Channel is "
+"really good for that. You should join it 👉 {link} 💬\n"
+"\n"
+"However, we've also prepared some information for you to start with."
+msgstr ""
+"Als nieuwe rebel heb je misschien wat vragen. Het Q&A-Telegramkanaal is daar "
+"zeer geschikt voor. Meld je daar vooral voor aan: 👉 {link} 💬\n"
+"\n"
+"We hebben ook alvast wat informatie verzameld om je wegwijs te maken."
+
+#: src/content.py:20
+msgid "Why does XR exist? (the crisis)"
+msgstr "Waarom bestaat XR?"
+
+#: src/content.py:22
+msgid "Why XR exists.pdf"
+msgstr "Waarom XR bestaat.pdf"
+
+#: src/content.py:25
+msgid "What does XR do? (the solution)"
+msgstr "Wat doet XR?"
+
+#: src/content.py:27
+msgid "What XR does.pdf"
+msgstr "Wat XR doet.pdf"
+
+#: src/content.py:30
+msgid "How is XR organized? (the logistics)"
+msgstr "Hoe is XR georganiseerd? (de logistiek)"
+
+#: src/content.py:32
+msgid "How XR is organized.pdf"
+msgstr "Hoe XR georganiseerd is.pdf"
+
+#: src/content.py:36
+msgid "But really, how does this work? (the reality)"
+msgstr "Maar hoe werkt het echt? (de realiteit)"
+
+#: src/content.py:40
+msgid "How XR is organized (unofficial guide).pdf"
+msgstr "Hoe XR georganiseerd is (unofficial guide).pdf"
+
+#: src/content.py:44
+msgid "How do we communicate? (telegram chats)"
+msgstr "Hoe wordt er gecommuniceerd? (telegram chats)"
+
+#: src/content.py:46
 msgid ""
 "## TODO ##\n"
 "I will send a real nice overview of all Telegram chats here."
@@ -80,27 +155,11 @@ msgstr ""
 "## TODO ##\n"
 "Hier komt een mooi overzicht van alle Telegram chats."
 
-#: welcome_bot.py:209
-msgid "Yes"
-msgstr "Ja"
-
-#: welcome_bot.py:210
-msgid "No"
-msgstr "Nee"
-
-#: welcome_bot.py:215
-msgid "Do you wish to receive any more information?"
-msgstr "Wil je nog meer informatie ontvangen?"
-
-#: welcome_bot.py:243
-msgid ""
-"Ok then! Feel free to hit me up if you need more info. Just type /start to "
-"restart this conversation."
-msgstr ""
-"Oke! Je kunt me altijd bereiken als je meer informatie wilt. Typ daarvoor "
-"gewoon /start om dit gesprek opnieuw te beginnen."
-
-#: welcome_bot.py:257
-msgid "I am not sure how to respond to this. I'm just a simple robot :-("
-msgstr ""
-"Ik weet niet hoe ik hierop moet antwoorden. Ik ben maar een simpele robot :-("
+#~ msgid ""
+#~ "Ok then! Feel free to hit me up if you need more info. Just type /info to "
+#~ "request information, /lang to set your preferred language or /start to "
+#~ "completely restart this conversation."
+#~ msgstr ""
+#~ "Oke! Je kunt me altijd bereiken als je meer informatie wilt. Typ /info om "
+#~ "informatie op te vragen, /lang om de taal in te stellen of /start om dit "
+#~ "gesprek helemaal opnieuw te beginnen."

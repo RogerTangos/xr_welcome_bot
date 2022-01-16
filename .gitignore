@@ -1,5 +1,5 @@
 *.pyc
-secret.py
 .vscode
 .idea
-/user_data
+/src/secret.py
+/data/user_data
