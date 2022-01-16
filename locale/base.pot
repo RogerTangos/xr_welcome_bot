@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 00:41+0000\n"
+"POT-Creation-Date: 2022-01-16 20:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,59 +25,46 @@ msgstr ""
 msgid "Are you interested in knowing more about any of the following topics?"
 msgstr ""
 
-#: src/welcome_bot.py:140
+#: src/welcome_bot.py:141
 msgid "Thanks, I'm all set. (end this conversation)"
 msgstr ""
 
-#: src/welcome_bot.py:163
+#: src/welcome_bot.py:162
 msgid "Just a second, I'm sending you a file."
 msgstr ""
 
-#: src/welcome_bot.py:174
+#: src/welcome_bot.py:173
 #, python-brace-format
 msgid ""
 "Oops, seems like something went wrong. I cannot find or open the document "
 "you requested: '{key}'."
 msgstr ""
 
-#: src/welcome_bot.py:195
+#: src/welcome_bot.py:194
 msgid "Yes"
 msgstr ""
 
-#: src/welcome_bot.py:196
+#: src/welcome_bot.py:195
 msgid "No"
 msgstr ""
 
-#: src/welcome_bot.py:201
+#: src/welcome_bot.py:200
 msgid "Would you like any more information?"
 msgstr ""
 
-#: src/welcome_bot.py:225
+#: src/welcome_bot.py:226
 msgid "Ok then! Feel free to hit me up if you need more info."
 msgstr ""
 
-#: src/welcome_bot.py:233
+#: src/welcome_bot.py:234
 msgid ""
-"You can type /info to request information, /lang to set your preferred "
-"language or /start to completely restart the welcome conversation. Type /"
-"deletedata if you want to delete the data associated with your Telegram "
-"account. (I store your user id, language and a number that indicates the "
-"current conversation progress.) "
+"You can type\n"
+"/info to request information,\n"
+"/lang to set your preferred language or\n"
+"/start to completely restart the welcome conversation."
 msgstr ""
 
-#: src/welcome_bot.py:245
-msgid ""
-"All data associated with your Telegram account (including your preferred "
-"language) has been deleted."
-msgstr ""
-
-#: src/welcome_bot:259
-mesageid ""
-"😖 Sorry, ik kan niet meer op die knop reageren.\n\n😖 Sorry, I can't respond to that button anymore. "
-"Type /start to completely restart the welcome conversation."
-messagestr ""
-
-#: src/welcome_bot.py:267
+#: src/welcome_bot.py:263
 msgid ""
 "I am not sure how to respond to this 🙁. Type /help for more information."
 msgstr ""
@@ -115,19 +102,19 @@ msgstr ""
 msgid "How XR is organized.pdf"
 msgstr ""
 
-#: src/content.py:36
+#: src/content.py:35
 msgid "But really, how does this work? (the reality)"
 msgstr ""
 
-#: src/content.py:40
+#: src/content.py:37
 msgid "How XR is organized (unofficial guide).pdf"
 msgstr ""
 
-#: src/content.py:44
+#: src/content.py:40
 msgid "How do we communicate? (telegram chats)"
 msgstr ""
 
-#: src/content.py:46
+#: src/content.py:42
 msgid ""
 "## TODO ##\n"
 "I will send a real nice overview of all Telegram chats here."
