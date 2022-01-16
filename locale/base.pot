@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 00:09+0000\n"
+"POT-Creation-Date: 2022-01-16 00:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,60 +17,61 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/welcome_bot.py:95
+#: src/welcome_bot.py:96
 msgid "Great! I will communicate in English with you from now on."
 msgstr ""
 
-#: src/welcome_bot.py:121
+#: src/welcome_bot.py:122
 msgid "Are you interested in knowing more about any of the following topics?"
 msgstr ""
 
-#: src/welcome_bot.py:139
+#: src/welcome_bot.py:140
 msgid "Thanks, I'm all set. (end this conversation)"
 msgstr ""
 
-#: src/welcome_bot.py:162
+#: src/welcome_bot.py:163
 msgid "Just a second, I'm sending you a file."
 msgstr ""
 
-#: src/welcome_bot.py:173
+#: src/welcome_bot.py:174
 #, python-brace-format
 msgid ""
 "Oops, seems like something went wrong. I cannot find or open the document "
 "you requested: '{key}'."
 msgstr ""
 
-#: src/welcome_bot.py:194
+#: src/welcome_bot.py:195
 msgid "Yes"
 msgstr ""
 
-#: src/welcome_bot.py:195
+#: src/welcome_bot.py:196
 msgid "No"
 msgstr ""
 
-#: src/welcome_bot.py:200
+#: src/welcome_bot.py:201
 msgid "Would you like any more information?"
 msgstr ""
 
-#: src/welcome_bot.py:224
+#: src/welcome_bot.py:225
 msgid "Ok then! Feel free to hit me up if you need more info."
 msgstr ""
 
-#: src/welcome_bot.py:232
+#: src/welcome_bot.py:233
 msgid ""
 "You can type /info to request information, /lang to set your preferred "
 "language or /start to completely restart the welcome conversation. Type /"
 "deletedata if you want to delete the data associated with your Telegram "
-"account. This might also help if I behave weirdly."
+"account (I store your user id, language and a number that indicates the "
+"current conversation progress). "
 msgstr ""
 
-#: src/welcome_bot.py:244
+#: src/welcome_bot.py:245
 msgid ""
 "All data associated with your Telegram account (including your preferred "
 "language) has been deleted."
 msgstr ""
 
-#: src/welcome_bot.py:264
+#: src/welcome_bot.py:267
 msgid ""
 "I am not sure how to respond to this ☹. Type /help for more information and "
 "troubleshooting."
