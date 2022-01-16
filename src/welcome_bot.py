@@ -3,6 +3,7 @@
 import logging
 from functools import partial
 from pathlib import Path
+from typing import Optional, Any
 
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import (
@@ -41,12 +42,12 @@ def approve_join_request(update: Update, context: CallbackContext):
         )
 
 
-def start_conversation(update: Update, context: CallbackContext) -> int:
+def start_conversation(update: Update, context: CallbackContext) -> Optional[int]:
     if update.chat_join_request is not None and "language" in context.user_data:
         # We already know this user as we already stored their language. Just accept their join request without
         # starting a conversation.
         approve_join_request(update, context)
-        return ConversationHandler.END
+        return None
 
     welcome_message = (
         "Hi! I'm the XR (Extinction Rebellion) chat bot. I'm here to show you around.\n\n"
@@ -62,7 +63,7 @@ def start_conversation(update: Update, context: CallbackContext) -> int:
 
 
 def ask_for_language(
-    update: Update, context: CallbackContext, set_language_only: bool = False
+        update: Update, context: CallbackContext, set_language_only: bool = False
 ) -> int:
     buttons = [
         [
@@ -110,7 +111,7 @@ def language_selected(update: Update, context: CallbackContext) -> int:
 
 
 def send_info_options(
-    update: Update, context: CallbackContext, include_follow_up_message=False
+        update: Update, context: CallbackContext, include_follow_up_message=False
 ) -> int:
     if include_follow_up_message:
         update.effective_message.reply_text(
@@ -231,8 +232,8 @@ def send_help_message(update: Update, context: CallbackContext):
         translate(
             "You can type /info to request information, "
             "/lang to set your preferred language or /start to completely restart the welcome conversation. "
-            "Type /deletedata if you want to delete the data associated with your Telegram account. "
-            "This might also help if I behave weirdly.",
+            "Type /deletedata if you want to delete the data associated with your Telegram account "
+            "(I store your user id, language and a number that indicates the current conversation progress). ",
             context,
         )
     )
@@ -309,6 +310,7 @@ def main() -> None:
         name="xr_welcome_conversation",
         persistent=True,
         per_chat=False,
+        allow_reentry=True,
     )
 
     # Do not change order
