@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-15 20:56+0000\n"
+"POT-Creation-Date: 2022-01-16 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,50 +17,63 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/welcome_bot.py:79
+#: src/welcome_bot.py:95
 msgid "Great! I will communicate in English with you from now on."
 msgstr ""
 
-#: src/welcome_bot.py:96
+#: src/welcome_bot.py:121
 msgid "Are you interested in knowing more about any of the following topics?"
 msgstr ""
 
-#: src/welcome_bot.py:113
+#: src/welcome_bot.py:139
 msgid "Thanks, I'm all set. (end this conversation)"
 msgstr ""
 
-#: src/welcome_bot.py:136
+#: src/welcome_bot.py:162
 msgid "Just a second, I'm sending you a file."
 msgstr ""
 
-#: src/welcome_bot.py:147
+#: src/welcome_bot.py:173
 #, python-brace-format
 msgid ""
 "Oops, seems like something went wrong. I cannot find or open the document "
 "you requested: '{key}'."
 msgstr ""
 
-#: src/welcome_bot.py:168
+#: src/welcome_bot.py:194
 msgid "Yes"
 msgstr ""
 
-#: src/welcome_bot.py:169
+#: src/welcome_bot.py:195
 msgid "No"
 msgstr ""
 
-#: src/welcome_bot.py:174
+#: src/welcome_bot.py:200
 msgid "Would you like any more information?"
 msgstr ""
 
-#: src/welcome_bot.py:199
-msgid ""
-"Ok then! Feel free to hit me up if you need more info. Just type /info to "
-"request information, /lang to set your preferred language or /start to "
-"completely restart this conversation."
+#: src/welcome_bot.py:224
+msgid "Ok then! Feel free to hit me up if you need more info."
 msgstr ""
 
-#: src/welcome_bot.py:214
-msgid "I am not sure how to respond to this. I'm just a simple chat bot ☹"
+#: src/welcome_bot.py:232
+msgid ""
+"You can type /info to request information, /lang to set your preferred "
+"language or /start to completely restart the welcome conversation. Type /"
+"deletedata if you want to delete the data associated with your Telegram "
+"account. This might also help if I behave weirdly."
+msgstr ""
+
+#: src/welcome_bot.py:244
+msgid ""
+"All data associated with your Telegram account (including your preferred "
+"language) has been deleted."
+msgstr ""
+
+#: src/welcome_bot.py:264
+msgid ""
+"I am not sure how to respond to this ☹. Type /help for more information and "
+"troubleshooting."
 msgstr ""
 
 #: src/content.py:11
@@ -96,19 +109,19 @@ msgstr ""
 msgid "How XR is organized.pdf"
 msgstr ""
 
-#: src/content.py:35
+#: src/content.py:36
 msgid "But really, how does this work? (the reality)"
 msgstr ""
 
-#: src/content.py:37
+#: src/content.py:40
 msgid "How XR is organized (unofficial guide).pdf"
 msgstr ""
 
-#: src/content.py:40
+#: src/content.py:44
 msgid "How do we communicate? (telegram chats)"
 msgstr ""
 
-#: src/content.py:41
+#: src/content.py:46
 msgid ""
 "## TODO ##\n"
 "I will send a real nice overview of all Telegram chats here."

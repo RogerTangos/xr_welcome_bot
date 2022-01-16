@@ -28,7 +28,7 @@ class InfoButtons(enum.Enum):
     )
     XR_STRUCTURES = FileInfoButton(
         lambda context: translate("How is XR organized? (the logistics)", context),
-        "xr_structures.pdf.pdf",
+        "xr_structures.pdf",
         lambda context: translate("How XR is organized.pdf", context),
     )
     XR_UNOFFICIAL_GUIDE = FileInfoButton(
