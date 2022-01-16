@@ -4,7 +4,7 @@ from typing import Callable
 
 from telegram.ext import CallbackContext
 
-from src.i18n import get_user_language
+from i18n import get_user_language
 
 
 # Abstract base class for a button that provides the user with a piece of information on click

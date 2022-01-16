@@ -15,14 +15,14 @@ from telegram.ext import (
 )
 
 from content import InfoButtons, get_welcome_message_after_setting_language
-from data.secret import API_TOKEN
-from src.handlers import (
+from secret import API_TOKEN
+from handlers import (
     PrivateConversationCallbackQueryHandler,
     PrivateConversationCommandHandler,
     PrivateConversationMessageHandler,
 )
-from src.i18n import translate
-from src.info_buttons import FileInfoButton, TextInfoButton, InfoButton
+from i18n import translate
+from info_buttons import FileInfoButton, TextInfoButton, InfoButton
 
 # Enable logging
 logging.basicConfig(

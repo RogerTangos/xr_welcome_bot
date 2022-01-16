@@ -2,8 +2,8 @@ import enum
 
 from telegram.ext import CallbackContext
 
-from src.i18n import translate
-from src.info_buttons import FileInfoButton, TextInfoButton
+from i18n import translate
+from info_buttons import FileInfoButton, TextInfoButton
 
 
 def get_welcome_message_after_setting_language(context: CallbackContext) -> str:
