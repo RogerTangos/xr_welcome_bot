@@ -259,13 +259,10 @@ def fallback_handler(update: Update, context: CallbackContext):
         # Respond to invalid button clicks
         # Must be in multiple languages because language context may not be set
         update.effective_message.reply_text(
-            translate(
-                "😖 Sorry, ik kan niet meer op die knop reageren. "
-                "Type /start om het welkomsgesprek helemaal opnieuw te starten.\n\n"
-                "😖 Sorry, I can't respond to that button anymore. "
-                "Type /start to completely restart the welcome conversation.",
-                context,
-            )
+            "😖 Sorry, ik kan niet meer op die knop reageren. "
+            "Type /start om het welkomsgesprek helemaal opnieuw te starten.\n\n"
+            "😖 Sorry, I can't respond to that button anymore. "
+            "Type /start to completely restart the welcome conversation.",
         )
         update.callback_query.answer()
         return
