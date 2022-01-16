@@ -27,7 +27,8 @@ from secret import API_TOKEN
 
 # Enable logging
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.DEBUG,
 )
 
 logger = logging.getLogger(__name__)
@@ -37,9 +38,7 @@ CHOOSING_LANGUAGE, CHOOSING_INFO, CHOOSING_MORE_INFO = range(3)
 
 def approve_join_request(update: Update, context: CallbackContext):
     if update.chat_join_request is not None:
-        context.bot.approve_chat_join_request(
-            update.effective_chat.id, update.effective_user.id
-        )
+        context.bot.approve_chat_join_request(update.effective_chat.id, update.effective_user.id)
 
 
 def start_conversation(update: Update, context: CallbackContext) -> Optional[int]:
@@ -93,7 +92,10 @@ def language_selected(update: Update, context: CallbackContext) -> int:
     context.user_data["language"] = lang
 
     update.effective_message.reply_text(
-        translate("Great! I will communicate in English with you from now on.", context)
+        translate(
+            "Great! I will communicate in English with you from now on.",
+            context,
+        )
     )
 
     end_conversation = (
@@ -114,12 +116,11 @@ def send_info_options(
     update: Update, context: CallbackContext, include_follow_up_message=False
 ) -> int:
     if include_follow_up_message:
-        update.effective_message.reply_text(
-            get_welcome_message_after_setting_language(context)
-        )
+        update.effective_message.reply_text(get_welcome_message_after_setting_language(context))
 
     info_question = translate(
-        "Are you interested in knowing more about any of the following topics?", context
+        "Are you interested in knowing more about any of the following topics?",
+        context,
     )
 
     buttons = []
@@ -143,9 +144,7 @@ def send_info_options(
         ]
     )
 
-    update.effective_message.reply_text(
-        info_question, reply_markup=InlineKeyboardMarkup(buttons)
-    )
+    update.effective_message.reply_text(info_question, reply_markup=InlineKeyboardMarkup(buttons))
 
     return CHOOSING_INFO
 
@@ -215,6 +214,8 @@ def more_info_requested(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
     elif answer == "yes":
         return send_info_options(update, context)
+    elif InfoButtons.string_in_buttons(answer):
+        return info_requested(update, context)
     else:
         # ignore invalid button clicks
         return CHOOSING_MORE_INFO
@@ -232,8 +233,8 @@ def send_help_message(update: Update, context: CallbackContext):
         translate(
             "You can type /info to request information, "
             "/lang to set your preferred language or /start to completely restart the welcome conversation. "
-            "Type /deletedata if you want to delete the data associated with your Telegram account "
-            "(I store your user id, language and a number that indicates the current conversation progress). ",
+            "Type /deletedata if you want to delete the data associated with your Telegram account. "
+            "(I store your user id, language and a number that indicates the current conversation progress.) ",
             context,
         )
     )
@@ -255,16 +256,24 @@ def delete_data(update: Update, context: CallbackContext) -> int:
 
 def fallback_handler(update: Update, context: CallbackContext):
     if update.callback_query is not None:
-        # Ignore invalid button clicks
-        # TODO: decide whether we want to send the user a message here
-        #  to notify that they clicked a button that we can no longer respond to
+        # Respond to invalid button clicks
+        # Must be in multiple languages because language context may not be set
+        update.effective_message.reply_text(
+            translate(
+                "😖 Sorry, ik kan niet meer op die knop reageren. "
+                "Type /start om het welkomsgesprek helemaal opnieuw te starten.\n\n"
+                "😖 Sorry, I can't respond to that button anymore. "
+                "Type /start to completely restart the welcome conversation.",
+                context,
+            )
+        )
         update.callback_query.answer()
         return
 
     # TODO: store the message the user sent
     update.effective_message.reply_text(
         translate(
-            "I am not sure how to respond to this ☹. Type /help for more information.",
+            "I am not sure how to respond to this 🙁. " "Type /help for more information.",
             context,
         )
     )
@@ -289,13 +298,9 @@ def main() -> None:
             PrivateConversationCommandHandler("info", send_info_options),
         ],
         states={
-            CHOOSING_LANGUAGE: [
-                PrivateConversationCallbackQueryHandler(language_selected)
-            ],
+            CHOOSING_LANGUAGE: [PrivateConversationCallbackQueryHandler(language_selected)],
             CHOOSING_INFO: [PrivateConversationCallbackQueryHandler(info_requested)],
-            CHOOSING_MORE_INFO: [
-                PrivateConversationCallbackQueryHandler(more_info_requested)
-            ],
+            CHOOSING_MORE_INFO: [PrivateConversationCallbackQueryHandler(more_info_requested)],
         },
         fallbacks=[
             # Accept any join requests when the user is currently in a conversation
@@ -322,9 +327,7 @@ def main() -> None:
     dispatcher.add_handler(PrivateConversationCommandHandler("deletedata", delete_data))
     dispatcher.add_handler(PrivateConversationCallbackQueryHandler(fallback_handler))
     dispatcher.add_handler(
-        PrivateConversationMessageHandler(
-            filters=Filters.all, callback=fallback_handler
-        )
+        PrivateConversationMessageHandler(filters=Filters.all, callback=fallback_handler)
     )
 
     updater.start_polling()

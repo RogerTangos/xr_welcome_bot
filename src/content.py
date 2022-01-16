@@ -32,13 +32,9 @@ class InfoButtons(enum.Enum):
         lambda context: translate("How XR is organized.pdf", context),
     )
     XR_UNOFFICIAL_GUIDE = FileInfoButton(
-        lambda context: translate(
-            "But really, how does this work? (the reality)", context
-        ),
+        lambda context: translate("But really, how does this work? (the reality)", context),
         "xr_unofficial_guide.pdf",
-        lambda context: translate(
-            "How XR is organized (unofficial guide).pdf", context
-        ),
+        lambda context: translate("How XR is organized (unofficial guide).pdf", context),
     )
     CHATS_OVERVIEW = TextInfoButton(
         lambda context: translate("How do we communicate? (telegram chats)", context),
@@ -47,3 +43,10 @@ class InfoButtons(enum.Enum):
             context,
         ),
     )
+
+    @classmethod
+    def string_in_buttons(cls, mystring: str) -> bool:
+        for button in InfoButtons:
+            if button.name == mystring:
+                return True
+        return False

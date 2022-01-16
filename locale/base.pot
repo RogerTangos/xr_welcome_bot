@@ -61,8 +61,8 @@ msgid ""
 "You can type /info to request information, /lang to set your preferred "
 "language or /start to completely restart the welcome conversation. Type /"
 "deletedata if you want to delete the data associated with your Telegram "
-"account (I store your user id, language and a number that indicates the "
-"current conversation progress). "
+"account. (I store your user id, language and a number that indicates the "
+"current conversation progress.) "
 msgstr ""
 
 #: src/welcome_bot.py:245
@@ -71,9 +71,15 @@ msgid ""
 "language) has been deleted."
 msgstr ""
 
+#: src/welcome_bot:259
+mesageid ""
+"😖 Sorry, ik kan niet meer op die knop reageren.\n\n😖 Sorry, I can't respond to that button anymore. "
+"Type /start to completely restart the welcome conversation."
+messagestr ""
+
 #: src/welcome_bot.py:267
 msgid ""
-"I am not sure how to respond to this ☹. Type /help for more information."
+"I am not sure how to respond to this 🙁. Type /help for more information."
 msgstr ""
 
 #: src/content.py:11
