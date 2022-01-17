@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import logging
+import sys
 from functools import partial
-from pathlib import Path
 from typing import Optional
 
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
@@ -15,6 +15,7 @@ from telegram.ext import (
     Updater,
 )
 
+from config import PROJECT_ROOT, API_TOKEN
 from content import InfoButtons, get_welcome_message_after_setting_language
 from handlers import (
     PrivateConversationCallbackQueryHandler,
@@ -23,7 +24,6 @@ from handlers import (
 )
 from i18n import translate
 from info_buttons import FileInfoButton, TextInfoButton, InfoButton
-from secret import API_TOKEN
 
 # Enable logging
 logging.basicConfig(
@@ -267,11 +267,14 @@ def fallback_handler(update: Update, context: CallbackContext):
 
 
 def main() -> None:
+    if API_TOKEN is None:
+        sys.exit(
+            "No API token configured. Please refer to the README to learn how to configure your API token."
+        )
+
     updater = Updater(
         API_TOKEN,
-        persistence=PicklePersistence(
-            filename=str(Path(__file__).parents[1] / "data" / "user_data")
-        ),
+        persistence=PicklePersistence(filename=str(PROJECT_ROOT / "data" / "user_data")),
     )
     dispatcher = updater.dispatcher
 

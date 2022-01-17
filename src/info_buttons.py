@@ -4,6 +4,7 @@ from typing import Callable
 
 from telegram.ext import CallbackContext
 
+from config import PROJECT_ROOT
 from i18n import get_user_language
 
 
@@ -30,7 +31,7 @@ class FileInfoButton(InfoButton):
 
     def get_file_path(self, context: CallbackContext) -> Path:
         return (
-            Path(__file__).parents[1]
+            PROJECT_ROOT
             / "resources"
             / "files"
             / get_user_language(context)
