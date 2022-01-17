@@ -16,7 +16,7 @@ from telegram.ext import (
 )
 
 from config import PROJECT_ROOT, API_TOKEN
-from content import InfoButtons, get_welcome_message_after_setting_language
+from content import INFO_BUTTONS, get_welcome_message_after_setting_language
 from handlers import (
     PrivateConversationCallbackQueryHandler,
     PrivateConversationCommandHandler,
@@ -62,7 +62,7 @@ def start_conversation(update: Update, context: CallbackContext) -> Optional[int
 
 
 def ask_for_language(
-    update: Update, context: CallbackContext, set_language_only: bool = False
+        update: Update, context: CallbackContext, set_language_only: bool = False
 ) -> int:
     buttons = [
         [
@@ -113,7 +113,7 @@ def language_selected(update: Update, context: CallbackContext) -> int:
 
 
 def send_info_options(
-    update: Update, context: CallbackContext, include_follow_up_message=False
+        update: Update, context: CallbackContext, include_follow_up_message=False
 ) -> int:
     if include_follow_up_message:
         update.effective_message.reply_text(get_welcome_message_after_setting_language(context))
@@ -124,13 +124,13 @@ def send_info_options(
     )
 
     buttons = []
-    for item in InfoButtons:
-        if isinstance(item.value, InfoButton):
+    for key, button in INFO_BUTTONS.items():
+        if isinstance(button, InfoButton):
             buttons.append(
                 [
                     InlineKeyboardButton(
-                        text=item.value.get_button_text(context),
-                        callback_data=item.name,
+                        text=button.get_button_text(context),
+                        callback_data=key,
                     )
                 ]
             )
@@ -152,8 +152,8 @@ def send_info_options(
 def info_requested(update: Update, context: CallbackContext) -> int:
     key = update["callback_query"]["data"]
 
-    try:
-        button = InfoButtons[key].value
+    if key in INFO_BUTTONS:
+        button = INFO_BUTTONS[key]
 
         if isinstance(button, FileInfoButton):
             try:
@@ -177,7 +177,7 @@ def info_requested(update: Update, context: CallbackContext) -> int:
                 )
         elif isinstance(button, TextInfoButton):
             update.effective_message.reply_text(button.get_info_text(context))
-    except KeyError:
+    else:
         update.callback_query.answer()
 
         if key == "__DONE":
@@ -214,7 +214,7 @@ def more_info_requested(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
     elif answer == "yes":
         return send_info_options(update, context)
-    elif InfoButtons.string_in_buttons(answer):
+    elif answer in INFO_BUTTONS:
         return info_requested(update, context)
     else:
         send_unrecognized_button_click_message(update)
