@@ -9,14 +9,16 @@ To run the bot, you will need to have the [python 3.8+ language](https://www.pyt
 the [pip package manager](https://pip.pypa.io/en/stable/installation/) and
 the [pipenv environment manager](https://pypi.org/project/pipenv/) installed on your system.
 
-In order to run the bot, create the file `config/config.ini` and add your API token:
+To install requirements via pipenv type `pipenv install` from the project root.
+
+To run the bot, create the file `config/config.ini` and add your API token:
 
 ```
 [Telegram]
 Secret = XXX:YYY
 ```
 
-To install requirements via pipenv type `pipenv install` from the project root.
+Please refer to `config/example_config.ini` for more configuration options.
 
 ## Run
 

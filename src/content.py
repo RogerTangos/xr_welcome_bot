@@ -1,8 +1,12 @@
-from typing import Dict
+import logging
+from typing import Dict, List
 
+from ics import Event
 from telegram.ext import CallbackContext
 
-from i18n import translate
+from config import EVENTS_URL, EVENTS_MAX_RESULTS, EVENTS_MAX_DAYS, events_enabled
+from events import get_events
+from i18n import translate, get_user_language
 from info_buttons import FileInfoButton, TextInfoButton, InfoButton
 
 
@@ -44,3 +48,51 @@ INFO_BUTTONS: Dict[str, InfoButton] = {
         ),
     ),
 }
+
+if events_enabled():
+    INFO_BUTTONS["UPCOMING_EVENTS"] = TextInfoButton(
+        lambda context: translate("When do we meet? (upcoming events)", context),
+        lambda context: get_events_message(context),
+        parse_mode="HTML",
+    )
+
+
+def get_events_message(context: CallbackContext) -> str:
+    try:
+        events: List[Event] = get_events(EVENTS_URL, EVENTS_MAX_RESULTS, EVENTS_MAX_DAYS)
+        if len(events) == 0:
+            return translate(
+                "As far as I know, there are no upcoming events. "
+                "Maybe some of your fellow rebels know more than I do 🙂.",
+                context,
+            )
+        else:
+            return translate(
+                "These are the upcoming events that I know of:\n\n", context
+            ) + "\n\n".join(format_events(events, context))
+    except Exception as ex:
+        logging.exception("Failed to load upcoming events", exc_info=ex)
+        return translate(
+            "Oops, something went wrong. I failed to load the upcoming events.", context
+        )
+
+
+def format_events(events: List[Event], context: CallbackContext) -> List[str]:
+    language = get_user_language(context)
+    formatted_events = []
+
+    for event in events:
+        begin = event.begin.format("DD MMMM", locale=language)
+
+        formatted_event = (
+            f"{begin}: {event.name}"
+            if not event.url
+            else f'{begin}: <a href="{event.url}">{event.name}</a>'
+        )
+
+        if event.location:
+            formatted_event += " @ " + event.location
+
+        formatted_events.append(formatted_event)
+
+    return formatted_events

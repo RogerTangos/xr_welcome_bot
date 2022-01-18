@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 20:15+0000\n"
+"POT-Creation-Date: 2022-01-18 00:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,46 +17,45 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/welcome_bot.py:96
+#: src/welcome_bot.py:88
 msgid "Great! I will communicate in English with you from now on."
 msgstr ""
 
-#: src/welcome_bot.py:122
+#: src/welcome_bot.py:114
 msgid "Are you interested in knowing more about any of the following topics?"
 msgstr ""
 
-#: src/welcome_bot.py:141
+#: src/welcome_bot.py:133
 msgid "Thanks, I'm all set. (end this conversation)"
 msgstr ""
 
-#: src/welcome_bot.py:162
+#: src/welcome_bot.py:154
 msgid "Just a second, I'm sending you a file."
 msgstr ""
 
-#: src/welcome_bot.py:173
-#, python-brace-format
+#: src/welcome_bot.py:169
 msgid ""
 "Oops, seems like something went wrong. I cannot find or open the document "
-"you requested: '{key}'."
+"you requested."
 msgstr ""
 
-#: src/welcome_bot.py:194
+#: src/welcome_bot.py:192
 msgid "Yes"
 msgstr ""
 
-#: src/welcome_bot.py:195
+#: src/welcome_bot.py:193
 msgid "No"
 msgstr ""
 
-#: src/welcome_bot.py:200
+#: src/welcome_bot.py:198
 msgid "Would you like any more information?"
 msgstr ""
 
-#: src/welcome_bot.py:226
+#: src/welcome_bot.py:224
 msgid "Ok then! Feel free to hit me up if you need more info."
 msgstr ""
 
-#: src/welcome_bot.py:234
+#: src/welcome_bot.py:232
 msgid ""
 "You can type\n"
 "/info to request information,\n"
@@ -64,12 +63,12 @@ msgid ""
 "/start to completely restart the welcome conversation."
 msgstr ""
 
-#: src/welcome_bot.py:263
+#: src/welcome_bot.py:261
 msgid ""
 "I am not sure how to respond to this 🙁. Type /help for more information."
 msgstr ""
 
-#: src/content.py:11
+#: src/content.py:15
 #, python-brace-format
 msgid ""
 "As a new rebel, you might have some questions. The Q&A Telegram Channel is "
@@ -78,44 +77,64 @@ msgid ""
 "However, we've also prepared some information for you to start with."
 msgstr ""
 
-#: src/content.py:20
+#: src/content.py:24
 msgid "Why does XR exist? (the crisis)"
 msgstr ""
 
-#: src/content.py:22
+#: src/content.py:26
 msgid "Why XR exists.pdf"
 msgstr ""
 
-#: src/content.py:25
+#: src/content.py:29
 msgid "What does XR do? (the solution)"
 msgstr ""
 
-#: src/content.py:27
+#: src/content.py:31
 msgid "What XR does.pdf"
 msgstr ""
 
-#: src/content.py:30
+#: src/content.py:34
 msgid "How is XR organized? (the logistics)"
 msgstr ""
 
-#: src/content.py:32
+#: src/content.py:36
 msgid "How XR is organized.pdf"
 msgstr ""
 
-#: src/content.py:35
+#: src/content.py:39
 msgid "But really, how does this work? (the reality)"
 msgstr ""
 
-#: src/content.py:37
+#: src/content.py:41
 msgid "How XR is organized (unofficial guide).pdf"
 msgstr ""
 
-#: src/content.py:40
+#: src/content.py:44
 msgid "How do we communicate? (telegram chats)"
 msgstr ""
 
-#: src/content.py:42
+#: src/content.py:46
 msgid ""
 "## TODO ##\n"
 "I will send a real nice overview of all Telegram chats here."
+msgstr ""
+
+#: src/content.py:54
+msgid "When do we meet? (upcoming events)"
+msgstr ""
+
+#: src/content.py:65
+msgid ""
+"As far as I know, there are no upcoming events. Maybe some of your fellow "
+"rebels know more than I do 🙂."
+msgstr ""
+
+#: src/content.py:71
+msgid ""
+"These are the upcoming events that I know of:\n"
+"\n"
+msgstr ""
+
+#: src/content.py:76
+msgid "Oops, something went wrong. I failed to load the upcoming events."
 msgstr ""

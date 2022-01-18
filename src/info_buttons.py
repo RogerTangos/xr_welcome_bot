@@ -1,6 +1,6 @@
 from abc import ABC
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Optional
 
 from telegram.ext import CallbackContext
 
@@ -48,9 +48,11 @@ class TextInfoButton(InfoButton):
         self,
         button_text_provider: Callable[[CallbackContext], str],
         info_text_provider: Callable[[CallbackContext], str],
+        parse_mode: Optional[str] = None,
     ):
         super().__init__(button_text_provider)
         self.__info_text_provider = info_text_provider
+        self.parse_mode = parse_mode
 
     def get_info_text(self, context: CallbackContext) -> str:
         return self.__info_text_provider(context)

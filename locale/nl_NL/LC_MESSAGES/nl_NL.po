@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-16 20:15+0000\n"
-"PO-Revision-Date: 2022-01-16 21:20+0100\n"
+"POT-Creation-Date: 2022-01-18 00:14+0000\n"
+"PO-Revision-Date: 2022-01-18 01:16+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -18,48 +18,47 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
 
-#: src/welcome_bot.py:96
+#: src/welcome_bot.py:88
 msgid "Great! I will communicate in English with you from now on."
 msgstr "Oke! Vanaf nu zal ik je in het Nederlands aanspreken."
 
-#: src/welcome_bot.py:122
+#: src/welcome_bot.py:114
 msgid "Are you interested in knowing more about any of the following topics?"
 msgstr "Wil je meer weten over een van de volgende onderwerpen?"
 
-#: src/welcome_bot.py:141
+#: src/welcome_bot.py:133
 msgid "Thanks, I'm all set. (end this conversation)"
 msgstr "Ik weet genoeg voor nu. (beëindig dit gesprek)"
 
-#: src/welcome_bot.py:162
+#: src/welcome_bot.py:154
 msgid "Just a second, I'm sending you a file."
 msgstr "Momentje alsjeblieft, ik ben je een bestand aan het sturen."
 
-#: src/welcome_bot.py:173
-#, python-brace-format
+#: src/welcome_bot.py:169
 msgid ""
 "Oops, seems like something went wrong. I cannot find or open the document you "
-"requested: '{key}'."
+"requested."
 msgstr ""
 "Oeps, het lijkt erop dat er iets mis is gegaan. Ik kan het document dat je "
-"opvroeg, niet vinden of openen: '{key}'."
+"opvroeg, niet vinden of openen."
 
-#: src/welcome_bot.py:194
+#: src/welcome_bot.py:192
 msgid "Yes"
 msgstr "Ja"
 
-#: src/welcome_bot.py:195
+#: src/welcome_bot.py:193
 msgid "No"
 msgstr "Nee"
 
-#: src/welcome_bot.py:200
+#: src/welcome_bot.py:198
 msgid "Would you like any more information?"
 msgstr "Wil je nog meer informatie ontvangen?"
 
-#: src/welcome_bot.py:226
+#: src/welcome_bot.py:224
 msgid "Ok then! Feel free to hit me up if you need more info."
 msgstr "Oke! Laat het me weten als je meer informatie nodig hebt."
 
-#: src/welcome_bot.py:234
+#: src/welcome_bot.py:232
 msgid ""
 "You can type\n"
 "/info to request information,\n"
@@ -71,12 +70,12 @@ msgstr ""
 "/lang om de taal in te stellen of\n"
 "/start om dit gesprek helemaal opnieuw te beginnen."
 
-#: src/welcome_bot.py:263
+#: src/welcome_bot.py:261
 msgid "I am not sure how to respond to this 🙁. Type /help for more information."
 msgstr ""
 "Ik weet niet hoe ik hierop moet antwoorden 🙁. Typ /help voor meer informatie."
 
-#: src/content.py:11
+#: src/content.py:15
 #, python-brace-format
 msgid ""
 "As a new rebel, you might have some questions. The Q&A Telegram Channel is "
@@ -89,49 +88,75 @@ msgstr ""
 "\n"
 "We hebben ook alvast wat informatie verzameld om je wegwijs te maken."
 
-#: src/content.py:20
+#: src/content.py:24
 msgid "Why does XR exist? (the crisis)"
 msgstr "Waarom bestaat XR?"
 
-#: src/content.py:22
+#: src/content.py:26
 msgid "Why XR exists.pdf"
 msgstr "Waarom XR bestaat.pdf"
 
-#: src/content.py:25
+#: src/content.py:29
 msgid "What does XR do? (the solution)"
 msgstr "Wat doet XR?"
 
-#: src/content.py:27
+#: src/content.py:31
 msgid "What XR does.pdf"
 msgstr "Wat XR doet.pdf"
 
-#: src/content.py:30
+#: src/content.py:34
 msgid "How is XR organized? (the logistics)"
 msgstr "Hoe is XR georganiseerd? (de logistiek)"
 
-#: src/content.py:32
+#: src/content.py:36
 msgid "How XR is organized.pdf"
 msgstr "Hoe XR georganiseerd is.pdf"
 
-#: src/content.py:35
+#: src/content.py:39
 msgid "But really, how does this work? (the reality)"
 msgstr "Maar hoe werkt het echt? (de realiteit)"
 
-#: src/content.py:37
+#: src/content.py:41
 msgid "How XR is organized (unofficial guide).pdf"
 msgstr "Hoe XR georganiseerd is (unofficial guide).pdf"
 
-#: src/content.py:40
+#: src/content.py:44
 msgid "How do we communicate? (telegram chats)"
 msgstr "Hoe wordt er gecommuniceerd? (telegram chats)"
 
-#: src/content.py:42
+#: src/content.py:46
 msgid ""
 "## TODO ##\n"
 "I will send a real nice overview of all Telegram chats here."
 msgstr ""
 "## TODO ##\n"
 "Hier komt een mooi overzicht van alle Telegram chats."
+
+#: src/content.py:54
+msgid "When do we meet? (upcoming events)"
+msgstr "Wanneer komen we samen? (aankomende evenementen)"
+
+#: src/content.py:65
+msgid ""
+"As far as I know, there are no upcoming events. Maybe some of your fellow "
+"rebels know more than I do 🙂."
+msgstr ""
+"Voor zover ik weet, zijn er geen aankomende evenementen. Misschien weten je "
+"mede-rebellen meer dan ik 🙂."
+
+#: src/content.py:71
+msgid ""
+"These are the upcoming events that I know of:\n"
+"\n"
+msgstr ""
+"Voor zover ik weet, zijn dit de aankomende evenementen:\n"
+"\n"
+
+#: src/content.py:76
+msgid "Oops, something went wrong. I failed to load the upcoming events."
+msgstr ""
+"Oeps, het lijkt erop dat er iets mis is gegaan. Ik kon de aankomende "
+"evenementen niet ophalen."
 
 #~ msgid ""
 #~ "You can type /info to request information, /lang to set your preferred "
