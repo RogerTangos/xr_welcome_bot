@@ -125,7 +125,7 @@ msgstr "Hoe XR georganiseerd is (unofficial guide).pdf"
 msgid "How do we communicate? (telegram chats)"
 msgstr "Hoe wordt er gecommuniceerd? (telegram chats)"
 
-#: src/content.py:43
+#: src/content.py:42
 msgid ""
 "1. Broadcast XR Arnhem/Nijmegen: meant to share upcoming actions, training "
 "sessions or urgent requests. Anyone is allowed to post something, but check "

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-21 22:23+0100\n"
+"POT-Creation-Date: 2022-01-21 22:47+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,7 +69,7 @@ msgid ""
 "I am not sure how to respond to this 🙁. Type /help for more information."
 msgstr ""
 
-#: src/content.py:12
+#: src/content.py:11
 #, python-brace-format
 msgid ""
 "As a new rebel, you might have some questions. The Q&A Telegram Channel is "
@@ -78,43 +78,43 @@ msgid ""
 "However, we've also prepared some information for you to start with."
 msgstr ""
 
-#: src/content.py:21
+#: src/content.py:20
 msgid "Why does XR exist? (the crisis)"
 msgstr ""
 
-#: src/content.py:23
+#: src/content.py:22
 msgid "Why XR exists.pdf"
 msgstr ""
 
-#: src/content.py:26
+#: src/content.py:25
 msgid "What does XR do? (the solution)"
 msgstr ""
 
-#: src/content.py:28
+#: src/content.py:27
 msgid "What XR does.pdf"
 msgstr ""
 
-#: src/content.py:31
+#: src/content.py:30
 msgid "How is XR organized? (the logistics)"
 msgstr ""
 
-#: src/content.py:33
+#: src/content.py:32
 msgid "How XR is organized.pdf"
 msgstr ""
 
-#: src/content.py:36
+#: src/content.py:35
 msgid "But really, how does this work? (the reality)"
 msgstr ""
 
-#: src/content.py:38
+#: src/content.py:37
 msgid "How XR is organized (unofficial guide).pdf"
 msgstr ""
 
-#: src/content.py:41
+#: src/content.py:40
 msgid "How do we communicate? (telegram chats)"
 msgstr ""
 
-#: src/content.py:43
+#: src/content.py:42
 msgid ""
 "1. Broadcast XR Arnhem/Nijmegen: meant to share upcoming actions, training "
 "sessions or urgent requests. Anyone is allowed to post something, but check "

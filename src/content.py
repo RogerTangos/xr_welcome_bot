@@ -4,7 +4,6 @@ from telegram.ext import CallbackContext
 
 from i18n import translate
 from info_buttons import FileInfoButton, TextInfoButton
-from telegram_orientation import group_listing
 
 
 def get_welcome_message_after_setting_language(context: CallbackContext) -> str:
