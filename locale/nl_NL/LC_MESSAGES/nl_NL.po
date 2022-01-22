@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-18 00:14+0000\n"
-"PO-Revision-Date: 2022-01-18 01:16+0100\n"
+"POT-Creation-Date: 2022-01-22 10:52+0100\n"
+"PO-Revision-Date: 2022-01-22 10:56+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -17,6 +17,166 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
+
+#: src/content.py:15
+#, python-brace-format
+msgid ""
+"As a new rebel, you might have some questions. The Q&A Telegram Channel is "
+"really good for that. You should join it 👉 {link} 💬\n"
+"\n"
+"However, we've also prepared some information for you to start with."
+msgstr ""
+"Als nieuwe rebel heb je misschien wat vragen. Het Q&A-Telegramkanaal is daar "
+"zeer geschikt voor. Meld je daar vooral voor aan: 👉 {link} 💬\n"
+"\n"
+"We hebben ook alvast wat informatie verzameld om je wegwijs te maken."
+
+#: src/content.py:24
+msgid "Why does XR exist? (the crisis)"
+msgstr "Waarom bestaat XR?"
+
+#: src/content.py:26
+msgid "Why XR exists.pdf"
+msgstr "Waarom XR bestaat.pdf"
+
+#: src/content.py:29
+msgid "What does XR do? (the solution)"
+msgstr "Wat doet XR?"
+
+#: src/content.py:31
+msgid "What XR does.pdf"
+msgstr "Wat XR doet.pdf"
+
+#: src/content.py:34
+msgid "How is XR organized? (the logistics)"
+msgstr "Hoe is XR georganiseerd? (de logistiek)"
+
+#: src/content.py:36
+msgid "How XR is organized.pdf"
+msgstr "Hoe XR georganiseerd is.pdf"
+
+#: src/content.py:39
+msgid "But really, how does this work? (the reality)"
+msgstr "Maar hoe werkt het echt? (de realiteit)"
+
+#: src/content.py:41
+msgid "How XR is organized (unofficial guide).pdf"
+msgstr "Hoe XR georganiseerd is (unofficial guide).pdf"
+
+#: src/content.py:44
+msgid "How do we communicate? (telegram chats)"
+msgstr "Hoe wordt er gecommuniceerd? (telegram chats)"
+
+#: src/content.py:46
+#, python-brace-format
+msgid ""
+"1. Broadcast XR Arnhem/Nijmegen: This chat is meant to share upcoming "
+"actions, training sessions or urgent requests. Anyone is allowed to post "
+"something, but check with yourself whether it is meant to be in this channel. "
+"Follow this channel if you want to keep updated on what is going on with XR "
+"Arnhem/Nijmegen: {broadcast_link}\n"
+"\n"
+"\n"
+"2. Dorpsplein XR Arnhem/Nijmegen: This chat is meant for discussing actions "
+"and XR related questions. We advise to not have eleborated discussions, if "
+"you want to do this you can dm eachother or add an agenda point to the next "
+"meeting. Follow this channel if you want to be more involved and active in XR "
+"Arnhem/Nijmegen: {dorpsplein_link}\n"
+"\n"
+"\n"
+"3. Information Share XR Arnhem/Nijmegen: This chat is meant to share "
+"information, news articles and petitions about anything related to climate. "
+"Follow this channel if you are interested in keeping updated about the latest "
+"news about the climate and the environment: {info_channel_link}\n"
+"\n"
+"\n"
+"4. Welcome XR Arnhem/Nijmegen: This chat is meant for new rebels who have "
+"questions about our local group. Contact @mrpimmetjepom if you have questions "
+"about this group. {welcome_channel_link}\n"
+"\n"
+"\n"
+"5. Arts XR Arnhem/Nijmegen: This chat is meant for people that want to join "
+"the Arts circle. This circle creates different artworks for actions or other "
+"XR related events. Contact @metamathics if you want to join this circle or "
+"for questions.\n"
+"\n"
+"\n"
+"6. Onboarding and Integration XR Arnhem/Nijmegen: This chat is meant for "
+"people that want to join the Onboarding and Integration circle. This circle "
+"provides an integration programme for new rebels. {onboarding_link}\n"
+"\n"
+"\n"
+"7. There are different Affinity Groups, if you have any questions about them "
+"or if you want to join one or have any questions, you can contact @pepijnv.\n"
+"\n"
+"\n"
+"8. There are different working groups, that are focused on specific actions "
+"or long term projects. Ask around on Dorpsplein if you want to join any of "
+"them."
+msgstr ""
+"1. Broadcast XR Arnhem/Nijmegen: Deze chat is bedoeld om aankomende acties, "
+"trainingen of dringende verzoeken te delen. Iedereen mag iets posten, maar "
+"check bij jezelf of het in dit kanaal hoort. Volg dit kanaal als je op de "
+"hoogte wilt blijven van wat er speelt met XR Arnhem/Nijmegen: "
+"{broadcast_link}\n"
+"\n"
+"2. Dorpsplein XR Arnhem/Nijmegen: Deze chat is bedoeld voor het bespreken van "
+"acties en XR gerelateerde vragen. De chat is niet bedoeld om uitgebreide "
+"discussies te voeren, als je dit wilt doen kun je elkaar dm'en of een "
+"agendapunt toevoegen aan de volgende vergadering. Volg dit kanaal als je meer "
+"betrokken en actief wilt zijn bij XR Arnhem/Nijmegen: {dorpsplein_link}\n"
+"\n"
+"3. Information Share XR Arnhem/Nijmegen: Deze chat is bedoeld om informatie, "
+"nieuwsartikelen en petities te delen over alles wat met klimaat te maken "
+"heeft. Volg dit kanaal als je op de hoogte wilt blijven van het laatste "
+"nieuws over het klimaat en het milieu: {info_channel_link}\n"
+"\n"
+"4. Welkom XR Arnhem/Nijmegen: Deze chat is bedoeld voor nieuwe rebellen die "
+"vragen hebben over onze lokale groep. Neem contact met @mrpimmetjepom als je "
+"vragen hebt over deze groep. {welcome_channel_link}\n"
+"\n"
+"5. Arts XR Arnhem/Nijmegen: Deze chat is bedoeld voor mensen die zich willen "
+"aansluiten bij de Arts circle. Deze circle maakt verschillende materialen "
+"voor acties of andere XR-gerelateerde zaken. Neem contact op met @metamathics "
+"als je vragen hebt of lid wilt worden van deze circle.\n"
+"\n"
+"6. Onboarding and Integration XR Arnhem/Nijmegen: Deze chat is bedoeld voor "
+"mensen die zich willen aansluiten bij de Onboarding and Integration circle. "
+"Deze circle biedt een integratieprogramma voor nieuwe rebellen. "
+"{onboarding_link}\n"
+"\n"
+"7. Er zijn verschillende affiniteitsgroepen, als je er vragen over hebt of "
+"als je lid wilt worden, kun je contact opnemen met @pepijnv.\n"
+"\n"
+"8. Er zijn verschillende werkgroepen, die zich richten op specifieke acties "
+"of langetermijnprojecten. Vraag rond op Dorpsplein als je ergens aan mee wilt "
+"doen."
+
+#: src/content.py:67
+msgid "When do we meet? (upcoming events)"
+msgstr "Wanneer komen we samen? (aankomende evenementen)"
+
+#: src/content.py:78
+msgid ""
+"As far as I know, there are no upcoming events. Maybe some of your fellow "
+"rebels know more than I do 🙂."
+msgstr ""
+"Voor zover ik weet, zijn er geen aankomende evenementen. Misschien weten je "
+"mede-rebellen meer dan ik 🙂."
+
+#: src/content.py:84
+msgid ""
+"These are the upcoming events that I know of:\n"
+"\n"
+msgstr ""
+"Voor zover ik weet, zijn dit de aankomende evenementen:\n"
+"\n"
+
+#: src/content.py:89
+msgid "Oops, something went wrong. I failed to load the upcoming events."
+msgstr ""
+"Oeps, het lijkt erop dat er iets mis is gegaan. Ik kon de aankomende "
+"evenementen niet ophalen."
 
 #: src/welcome_bot.py:88
 msgid "Great! I will communicate in English with you from now on."
@@ -74,106 +234,3 @@ msgstr ""
 msgid "I am not sure how to respond to this 🙁. Type /help for more information."
 msgstr ""
 "Ik weet niet hoe ik hierop moet antwoorden 🙁. Typ /help voor meer informatie."
-
-#: src/content.py:15
-#, python-brace-format
-msgid ""
-"As a new rebel, you might have some questions. The Q&A Telegram Channel is "
-"really good for that. You should join it 👉 {link} 💬\n"
-"\n"
-"However, we've also prepared some information for you to start with."
-msgstr ""
-"Als nieuwe rebel heb je misschien wat vragen. Het Q&A-Telegramkanaal is daar "
-"zeer geschikt voor. Meld je daar vooral voor aan: 👉 {link} 💬\n"
-"\n"
-"We hebben ook alvast wat informatie verzameld om je wegwijs te maken."
-
-#: src/content.py:24
-msgid "Why does XR exist? (the crisis)"
-msgstr "Waarom bestaat XR?"
-
-#: src/content.py:26
-msgid "Why XR exists.pdf"
-msgstr "Waarom XR bestaat.pdf"
-
-#: src/content.py:29
-msgid "What does XR do? (the solution)"
-msgstr "Wat doet XR?"
-
-#: src/content.py:31
-msgid "What XR does.pdf"
-msgstr "Wat XR doet.pdf"
-
-#: src/content.py:34
-msgid "How is XR organized? (the logistics)"
-msgstr "Hoe is XR georganiseerd? (de logistiek)"
-
-#: src/content.py:36
-msgid "How XR is organized.pdf"
-msgstr "Hoe XR georganiseerd is.pdf"
-
-#: src/content.py:39
-msgid "But really, how does this work? (the reality)"
-msgstr "Maar hoe werkt het echt? (de realiteit)"
-
-#: src/content.py:41
-msgid "How XR is organized (unofficial guide).pdf"
-msgstr "Hoe XR georganiseerd is (unofficial guide).pdf"
-
-#: src/content.py:44
-msgid "How do we communicate? (telegram chats)"
-msgstr "Hoe wordt er gecommuniceerd? (telegram chats)"
-
-#: src/content.py:46
-msgid ""
-"## TODO ##\n"
-"I will send a real nice overview of all Telegram chats here."
-msgstr ""
-"## TODO ##\n"
-"Hier komt een mooi overzicht van alle Telegram chats."
-
-#: src/content.py:54
-msgid "When do we meet? (upcoming events)"
-msgstr "Wanneer komen we samen? (aankomende evenementen)"
-
-#: src/content.py:65
-msgid ""
-"As far as I know, there are no upcoming events. Maybe some of your fellow "
-"rebels know more than I do 🙂."
-msgstr ""
-"Voor zover ik weet, zijn er geen aankomende evenementen. Misschien weten je "
-"mede-rebellen meer dan ik 🙂."
-
-#: src/content.py:71
-msgid ""
-"These are the upcoming events that I know of:\n"
-"\n"
-msgstr ""
-"Voor zover ik weet, zijn dit de aankomende evenementen:\n"
-"\n"
-
-#: src/content.py:76
-msgid "Oops, something went wrong. I failed to load the upcoming events."
-msgstr ""
-"Oeps, het lijkt erop dat er iets mis is gegaan. Ik kon de aankomende "
-"evenementen niet ophalen."
-
-#~ msgid ""
-#~ "You can type /info to request information, /lang to set your preferred "
-#~ "language or /start to completely restart the welcome conversation. Type /"
-#~ "deletedata if you want to delete the data associated with your Telegram "
-#~ "account. (I store your user id, language and a number that indicates the "
-#~ "current conversation progress.) "
-#~ msgstr ""
-#~ "Je kunt /info typen om informatie op te vragen, /lang om je taal in te "
-#~ "stellen of /start om het welkomsgesprek helemaal opnieuw te starten. Typ /"
-#~ "deletedata als je alle data die gelinkt is aan je Telegram-account, wilt "
-#~ "verwijderen (ik sla je user id, taal en een nummertje waarmee ik de "
-#~ "voortgang van het gesprek bijhoud op)."
-
-#~ msgid ""
-#~ "All data associated with your Telegram account (including your preferred "
-#~ "language) has been deleted."
-#~ msgstr ""
-#~ "Alle data die gelinkt is aan je Telegram-account (inclusief je ingestelde "
-#~ "taal) is verwijderd."

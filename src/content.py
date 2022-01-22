@@ -43,8 +43,21 @@ INFO_BUTTONS: Dict[str, InfoButton] = {
     "CHATS_OVERVIEW": TextInfoButton(
         lambda context: translate("How do we communicate? (telegram chats)", context),
         lambda context: translate(
-            "## TODO ##\nI will send a real nice overview of all Telegram chats here.",
+            """1. Broadcast XR Arnhem/Nijmegen: This chat is meant to share upcoming actions, training sessions or urgent requests. Anyone is allowed to post something, but check with yourself whether it is meant to be in this channel. Follow this channel if you want to keep updated on what is going on with XR Arnhem/Nijmegen: {broadcast_link}\n\n
+2. Dorpsplein XR Arnhem/Nijmegen: This chat is meant for discussing actions and XR related questions. We advise to not have eleborated discussions, if you want to do this you can dm eachother or add an agenda point to the next meeting. Follow this channel if you want to be more involved and active in XR Arnhem/Nijmegen: {dorpsplein_link}\n\n
+3. Information Share XR Arnhem/Nijmegen: This chat is meant to share information, news articles and petitions about anything related to climate. Follow this channel if you are interested in keeping updated about the latest news about the climate and the environment: {info_channel_link}\n\n
+4. Welcome XR Arnhem/Nijmegen: This chat is meant for new rebels who have questions about our local group. Contact @mrpimmetjepom if you have questions about this group. {welcome_channel_link}\n\n
+5. Arts XR Arnhem/Nijmegen: This chat is meant for people that want to join the Arts circle. This circle creates different artworks for actions or other XR related events. Contact @metamathics if you want to join this circle or for questions.\n\n
+6. Onboarding and Integration XR Arnhem/Nijmegen: This chat is meant for people that want to join the Onboarding and Integration circle. This circle provides an integration programme for new rebels. {onboarding_link}\n\n
+7. There are different Affinity Groups, if you have any questions about them or if you want to join one or have any questions, you can contact @pepijnv.\n\n
+8. There are different working groups, that are focused on specific actions or long term projects. Ask around on Dorpsplein if you want to join any of them.""",
             context,
+        ).format(
+            broadcast_link="https://t.me/+sYv9G_Vj7242OGY8",
+            dorpsplein_link="https://t.me/+8XoE2kNOp0FkMTNk",
+            info_channel_link="https://t.me/+iy7GRiokIoFkN2E8",
+            welcome_channel_link="https://t.me/+ttV6Jfcrpoc5YTE5",
+            onboarding_link="https://t.me/+YThz2Az4xdFiZTg5",
         ),
     ),
 }
