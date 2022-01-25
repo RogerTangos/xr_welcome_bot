@@ -18,15 +18,14 @@ def get_events(url: str, max_results: int, max_days: int) -> List[Event]:
     logging.info(f"Loading calendar from {url}")
 
     calendar = Calendar(requests.get(url).text)
-    events: List[Event] = list(calendar.timeline)
-
+    events: List[Event] = sorted(list(calendar.timeline), key=lambda x: x.begin)
     now: arrow = Arrow.now()
 
     items = []
     for index, event in enumerate(events):
         if event.end < now:
             continue
-        if index >= max_results or (0 < max_days < days_between(now, event.begin)):
+        if len(items) >= max_results or (0 < max_days < days_between(now, event.begin)):
             break
         items.append(event)
 
