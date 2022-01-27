@@ -8,6 +8,8 @@ requests = "*"
 python-telegram-bot = "*"
 update = "*"
 black = "*"
+ics = "*"
+cachetools = "*"
 
 [requires]
 python_version = "3.8"

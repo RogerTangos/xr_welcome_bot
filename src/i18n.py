@@ -1,11 +1,10 @@
 import gettext
-from pathlib import Path
 
 from telegram.ext import CallbackContext
 
-LANG_NL = gettext.translation(
-    "nl_NL", localedir=Path(__file__).parents[1] / "locale", languages=["nl_NL"]
-)
+from config import PROJECT_ROOT
+
+LANG_NL = gettext.translation("nl_NL", localedir=PROJECT_ROOT / "locale", languages=["nl_NL"])
 
 
 def translate(text: str, context: CallbackContext) -> str:

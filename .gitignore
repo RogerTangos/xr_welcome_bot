@@ -1,6 +1,6 @@
 *.pyc
 .vscode
 .idea
-/src/secret.py
+/config/config.ini
 /data/user_data
 *.out

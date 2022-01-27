@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import logging
+import sys
 from functools import partial
-from pathlib import Path
 from typing import Optional
 
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
@@ -15,23 +15,15 @@ from telegram.ext import (
     Updater,
 )
 
-from content import InfoButtons, get_welcome_message_after_setting_language
+from config import PROJECT_ROOT, API_TOKEN
+from content import INFO_BUTTONS, get_welcome_message_after_setting_language
 from handlers import (
     PrivateConversationCallbackQueryHandler,
     PrivateConversationCommandHandler,
     PrivateConversationMessageHandler,
 )
-from i18n import translate
+from i18n import translate, get_user_language
 from info_buttons import FileInfoButton, TextInfoButton, InfoButton
-from secret import API_TOKEN
-
-# Enable logging
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    level=logging.DEBUG,
-)
-
-logger = logging.getLogger(__name__)
 
 CHOOSING_LANGUAGE, CHOOSING_INFO, CHOOSING_MORE_INFO = range(3)
 
@@ -62,7 +54,7 @@ def start_conversation(update: Update, context: CallbackContext) -> Optional[int
 
 
 def ask_for_language(
-    update: Update, context: CallbackContext, set_language_only: bool = False
+    update: Update, context: CallbackContext, end_conversation: bool = False
 ) -> int:
     buttons = [
         [
@@ -76,7 +68,7 @@ def ask_for_language(
         reply_markup=InlineKeyboardMarkup(buttons),
     )
 
-    context.user_data["set_language_only"] = set_language_only
+    context.user_data["end_conv_after_set_lang"] = end_conversation
 
     return CHOOSING_LANGUAGE
 
@@ -99,12 +91,12 @@ def language_selected(update: Update, context: CallbackContext) -> int:
     )
 
     end_conversation = (
-        context.user_data["set_language_only"]
-        if "set_language_only" in context.user_data
+        context.user_data["end_conv_after_set_lang"]
+        if "end_conv_after_set_lang" in context.user_data
         else False
     )
-    if "set_language_only" in context.user_data:
-        del context.user_data["set_language_only"]
+    if "end_conv_after_set_lang" in context.user_data:
+        del context.user_data["end_conv_after_set_lang"]
 
     if end_conversation:
         return ConversationHandler.END
@@ -124,13 +116,13 @@ def send_info_options(
     )
 
     buttons = []
-    for item in InfoButtons:
-        if isinstance(item.value, InfoButton):
+    for key, button in INFO_BUTTONS.items():
+        if isinstance(button, InfoButton):
             buttons.append(
                 [
                     InlineKeyboardButton(
-                        text=item.value.get_button_text(context),
-                        callback_data=item.name,
+                        text=button.get_button_text(context),
+                        callback_data=key,
                     )
                 ]
             )
@@ -152,8 +144,8 @@ def send_info_options(
 def info_requested(update: Update, context: CallbackContext) -> int:
     key = update["callback_query"]["data"]
 
-    try:
-        button = InfoButtons[key].value
+    if key in INFO_BUTTONS:
+        button = INFO_BUTTONS[key]
 
         if isinstance(button, FileInfoButton):
             try:
@@ -167,17 +159,23 @@ def info_requested(update: Update, context: CallbackContext) -> int:
                         document=file,
                         filename=f"{button.get_user_filename(context)}.pdf",
                     )
-            except Exception:
+            except Exception as ex:
+                logging.error(
+                    f"Failed to load file '{key}' in language '{get_user_language(context)}'",
+                    exc_info=ex,
+                )
                 update.effective_message.reply_text(
                     translate(
                         "Oops, seems like something went wrong. "
-                        "I cannot find or open the document you requested: '{key}'.",
+                        "I cannot find or open the document you requested.",
                         context,
-                    ).format(key=key)
+                    )
                 )
         elif isinstance(button, TextInfoButton):
-            update.effective_message.reply_text(button.get_info_text(context))
-    except KeyError:
+            update.effective_message.reply_text(
+                button.get_info_text(context), parse_mode=button.parse_mode
+            )
+    else:
         update.callback_query.answer()
 
         if key == "__DONE":
@@ -214,7 +212,7 @@ def more_info_requested(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
     elif answer == "yes":
         return send_info_options(update, context)
-    elif InfoButtons.string_in_buttons(answer):
+    elif answer in INFO_BUTTONS:
         return info_requested(update, context)
     else:
         send_unrecognized_button_click_message(update)
@@ -267,11 +265,19 @@ def fallback_handler(update: Update, context: CallbackContext):
 
 
 def main() -> None:
+    if API_TOKEN is None:
+        sys.exit(
+            "No API token configured. Please refer to the README to learn how to configure your API token."
+        )
+
+    logging.basicConfig(
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        level=logging.DEBUG,
+    )
+
     updater = Updater(
         API_TOKEN,
-        persistence=PicklePersistence(
-            filename=str(Path(__file__).parents[1] / "data" / "user_data")
-        ),
+        persistence=PicklePersistence(filename=str(PROJECT_ROOT / "data" / "user_data")),
     )
     dispatcher = updater.dispatcher
 
@@ -280,7 +286,7 @@ def main() -> None:
             ChatJoinRequestHandler(start_conversation),
             PrivateConversationCommandHandler("start", start_conversation),
             PrivateConversationCommandHandler(
-                "lang", partial(ask_for_language, set_language_only=True)
+                "lang", partial(ask_for_language, end_conversation=True)
             ),
             PrivateConversationCommandHandler("info", send_info_options),
         ],

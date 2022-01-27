@@ -1,9 +1,13 @@
-import enum
+import logging
+from typing import Dict, List
 
+from ics import Event
 from telegram.ext import CallbackContext
 
-from i18n import translate
-from info_buttons import FileInfoButton, TextInfoButton
+from config import EVENTS_URL, EVENTS_MAX_RESULTS, EVENTS_MAX_DAYS, events_enabled
+from events import get_events
+from i18n import translate, get_user_language
+from info_buttons import FileInfoButton, TextInfoButton, InfoButton
 
 
 def get_welcome_message_after_setting_language(context: CallbackContext) -> str:
@@ -15,28 +19,28 @@ def get_welcome_message_after_setting_language(context: CallbackContext) -> str:
     ).format(link="https://t.me/+ttV6Jfcrpoc5YTE5")
 
 
-class InfoButtons(enum.Enum):
-    HEADING_FOR_EXTINCTION_1 = FileInfoButton(
+INFO_BUTTONS: Dict[str, InfoButton] = {
+    "HEADING_FOR_EXTINCTION_1": FileInfoButton(
         lambda context: translate("Why does XR exist? (the crisis)", context),
         "heading_for_extinction_1.pdf",
         lambda context: translate("Why XR exists.pdf", context),
-    )
-    HEADING_FOR_EXTINCTION_2 = FileInfoButton(
+    ),
+    "HEADING_FOR_EXTINCTION_2": FileInfoButton(
         lambda context: translate("What does XR do? (the solution)", context),
         "heading_for_extinction_2.pdf",
         lambda context: translate("What XR does.pdf", context),
-    )
-    XR_STRUCTURES = FileInfoButton(
+    ),
+    "XR_STRUCTURES": FileInfoButton(
         lambda context: translate("How is XR organized? (the logistics)", context),
         "xr_structures.pdf",
         lambda context: translate("How XR is organized.pdf", context),
-    )
-    XR_UNOFFICIAL_GUIDE = FileInfoButton(
+    ),
+    "XR_UNOFFICIAL_GUIDE": FileInfoButton(
         lambda context: translate("But really, how does this work? (the reality)", context),
         "xr_unofficial_guide.pdf",
         lambda context: translate("How XR is organized (unofficial guide).pdf", context),
-    )
-    CHATS_OVERVIEW = TextInfoButton(
+    ),
+    "CHATS_OVERVIEW": TextInfoButton(
         lambda context: translate("How do we communicate? (telegram chats)", context),
         lambda context: translate(
             """1. Broadcast XR Arnhem/Nijmegen: This chat is meant to share upcoming actions, training sessions or urgent requests. Anyone is allowed to post something, but check with yourself whether it is meant to be in this channel. Follow this channel if you want to keep updated on what is going on with XR Arnhem/Nijmegen: {broadcast_link}\n\n
@@ -55,11 +59,53 @@ class InfoButtons(enum.Enum):
             welcome_channel_link="https://t.me/+ttV6Jfcrpoc5YTE5",
             onboarding_link="https://t.me/+YThz2Az4xdFiZTg5",
         ),
+    ),
+}
+
+if events_enabled():
+    INFO_BUTTONS["UPCOMING_EVENTS"] = TextInfoButton(
+        lambda context: translate("When do we meet? (upcoming events)", context),
+        lambda context: get_events_message(context),
+        parse_mode="HTML",
     )
 
-    @classmethod
-    def string_in_buttons(cls, mystring: str) -> bool:
-        for button in InfoButtons:
-            if button.name == mystring:
-                return True
-        return False
+
+def get_events_message(context: CallbackContext) -> str:
+    try:
+        events: List[Event] = get_events(EVENTS_URL, EVENTS_MAX_RESULTS, EVENTS_MAX_DAYS)
+        if len(events) == 0:
+            return translate(
+                "As far as I know, there are no upcoming events. "
+                "Maybe some of your fellow rebels know more than I do 🙂.",
+                context,
+            )
+        else:
+            return translate(
+                "These are the upcoming events that I know of:\n\n", context
+            ) + "\n\n".join(format_events(events, context))
+    except Exception as ex:
+        logging.exception("Failed to load upcoming events", exc_info=ex)
+        return translate(
+            "Oops, something went wrong. I failed to load the upcoming events.", context
+        )
+
+
+def format_events(events: List[Event], context: CallbackContext) -> List[str]:
+    language = get_user_language(context)
+    formatted_events = []
+
+    for event in events:
+        begin = event.begin.format("DD MMMM", locale=language)
+
+        formatted_event = (
+            f"{begin}: {event.name}"
+            if not event.url
+            else f'{begin}: <a href="{event.url}">{event.name}</a>'
+        )
+
+        if event.location:
+            formatted_event += " @ " + event.location
+
+        formatted_events.append(formatted_event)
+
+    return formatted_events
