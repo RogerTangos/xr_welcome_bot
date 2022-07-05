@@ -1,6 +1,6 @@
 # XR welcome Telegram bot
 
-When new rebels enter into XR Arnhem/Nijmegen's telegram chats, the XR Welcome Bot is used to send them documents and
+When new rebels enter into XR Nijmegen's telegram chats, the XR Welcome Bot is used to send them documents and
 integrate them into the community.
 
 ## Setup
