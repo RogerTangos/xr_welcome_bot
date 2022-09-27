@@ -12,9 +12,11 @@ from info_buttons import FileInfoButton, TextInfoButton, InfoButton
 
 def get_welcome_message_after_setting_language(context: CallbackContext) -> str:
     return translate(
-        "As a new rebel, you might have some questions. That's why we've prepared some information for you to start with.",
+        "As a new rebel, you might have some questions. "
+        "The Q&A Telegram Channel is really good for that. You should join it 👉 {link} 💬\n\n"
+        "However, we've also prepared some information for you to start with.",
         context,
-    ).format(link="https://t.me/+ttV6Jfcrpoc5YTE5")
+    ).format(link="https://t.me/+hB0vSkUw9vc4ODk0")
 
 
 INFO_BUTTONS: Dict[str, InfoButton] = {
@@ -41,15 +43,16 @@ INFO_BUTTONS: Dict[str, InfoButton] = {
     "CHATS_OVERVIEW": TextInfoButton(
         lambda context: translate("How do we communicate? (telegram chats)", context),
         lambda context: translate(
-            """1. Broadcast XR Nijmegen: This chat is meant to share upcoming actions, training sessions or urgent requests. Anyone is allowed to post something, but check with yourself whether it is meant to be in this channel. Follow this channel if you want to keep updated on what is going on with XR Nijmegen: {broadcast_link}\n
+            """1. Broadcast XR Nijmegen: This chat is meant to share upcoming actions, training sessions or urgent requests. Only CC members can post here. Follow this channel if you want to keep updated on what is going on with XR Nijmegen: {broadcast_link}\n
 2. Townsquare XR Nijmegen: This chat is meant for discussing actions and XR related questions. We advise to not have eleborated discussions, if you want to do this you can dm eachother or add an agenda point to the next meeting. Follow this channel if you want to be more involved and active in XR Nijmegen: {townsquare_link}\n
-3. There are different circles, which act as small autonomous group with a specific function. For example this information is provided by the local Nijmegen Integration & Outreach circle. Ask around on Townsquare if you want to join a circle.\n
-4. There are different Affinity Groups, if you have any questions about them or if you want to join one or have any questions, you can contact @pepijnv.\n
+3. Q&A XR Nijmegen: This chat is meant for new and existing rebels to ask and answer questions about XR Nijmegen or XR in general. You can join the channel here: {qa_link}\n
+4. There are different circles, which act as small autonomous group with a specific function. Ask around on Townsquare if you want to join a circle.\n
 5. There are different working groups, that are focused on specific actions or long term projects. Ask around on Townsquare if you want to join any of them.""",
             context,
         ).format(
-            broadcast_link="https://t.me/+j4ilBmdz8B8yNWM0",
+            broadcast_link="https://t.me/+KcrNAleSj9lmYjRk",
             townsquare_link="https://t.me/+8FDtegYCGLNiZTc8",
+            qa_link="https://t.me/+hB0vSkUw9vc4ODk0",
         ),
     ),
 }

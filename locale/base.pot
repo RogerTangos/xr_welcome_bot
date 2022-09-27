@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-05 19:38+0000\n"
+"POT-Creation-Date: 2022-09-27 17:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,53 +69,55 @@ msgid ""
 msgstr ""
 
 #: src/content.py:15
+#, python-brace-format
 msgid ""
-"As a new rebel, you might have some questions. That's why we've prepared "
-"some information for you to start with."
-msgstr ""
-
-#: src/content.py:22
-msgid "Why does XR exist? (the crisis)"
+"As a new rebel, you might have some questions. The Q&A Telegram Channel is "
+"really good for that. You should join it 👉 {link} 💬\n"
+"\n"
+"However, we've also prepared some information for you to start with."
 msgstr ""
 
 #: src/content.py:24
+msgid "Why does XR exist? (the crisis)"
+msgstr ""
+
+#: src/content.py:26
 msgid "Why XR exists.pdf"
 msgstr ""
 
-#: src/content.py:27
+#: src/content.py:29
 msgid "What does XR do? (the solution)"
 msgstr ""
 
-#: src/content.py:29
+#: src/content.py:31
 msgid "What XR does.pdf"
 msgstr ""
 
-#: src/content.py:32
+#: src/content.py:34
 msgid "How is XR organized? (the logistics)"
 msgstr ""
 
-#: src/content.py:34
+#: src/content.py:36
 msgid "How XR is organized.pdf"
 msgstr ""
 
-#: src/content.py:37
+#: src/content.py:39
 msgid "But really, how does this work? (the reality)"
 msgstr ""
 
-#: src/content.py:39
+#: src/content.py:41
 msgid "How XR is organized (unofficial guide).pdf"
 msgstr ""
 
-#: src/content.py:42
+#: src/content.py:44
 msgid "How do we communicate? (telegram chats)"
 msgstr ""
 
-#: src/content.py:44
+#: src/content.py:46
 #, python-brace-format
 msgid ""
 "1. Broadcast XR Nijmegen: This chat is meant to share upcoming actions, "
-"training sessions or urgent requests. Anyone is allowed to post something, "
-"but check with yourself whether it is meant to be in this channel. Follow "
+"training sessions or urgent requests. Only CC members can post here. Follow "
 "this channel if you want to keep updated on what is going on with XR "
 "Nijmegen: {broadcast_link}\n"
 "\n"
@@ -125,35 +127,34 @@ msgid ""
 "Follow this channel if you want to be more involved and active in XR "
 "Nijmegen: {townsquare_link}\n"
 "\n"
-"3. There are different circles, which act as small autonomous group with a "
-"specific function. For example this information is provided by the local "
-"Nijmegen Integration & Outreach circle. Ask around on Townsquare if you want "
-"to join a circle.\n"
+"3. Q&A XR Nijmegen: This chat is meant for new and existing rebels to ask "
+"and answer questions about XR Nijmegen or XR in general. You can join the "
+"channel here: {qa_link}\n"
 "\n"
-"4. There are different Affinity Groups, if you have any questions about them "
-"or if you want to join one or have any questions, you can contact @pepijnv.\n"
+"4. There are different circles, which act as small autonomous group with a "
+"specific function. Ask around on Townsquare if you want to join a circle.\n"
 "\n"
 "5. There are different working groups, that are focused on specific actions "
 "or long term projects. Ask around on Townsquare if you want to join any of "
 "them."
 msgstr ""
 
-#: src/content.py:59
+#: src/content.py:62
 msgid "When do we meet? (upcoming events)"
 msgstr ""
 
-#: src/content.py:70
+#: src/content.py:73
 msgid ""
 "As far as I know, there are no upcoming events. Maybe some of your fellow "
 "rebels know more than I do 🙂."
 msgstr ""
 
-#: src/content.py:76
+#: src/content.py:79
 msgid ""
 "These are the upcoming events that I know of:\n"
 "\n"
 msgstr ""
 
-#: src/content.py:81
+#: src/content.py:84
 msgid "Oops, something went wrong. I failed to load the upcoming events."
 msgstr ""
